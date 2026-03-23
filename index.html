@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR 工作台 · 团队协作空间</title>
+<style>
+  /* ── 配置区：修改这里填入你的 JSONBin 信息 ── */
+  /* 见下方 JS 的 CONFIG 对象 */
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --orange:   #E87722;
+    --orange-l: #FEF0E4;
+    --orange-d: #B85010;
+    --dark:     #1A1A1A;
+    --mid:      #555;
+    --light:    #999;
+    --border:   #E4E4E4;
+    --bg:       #F5F5F5;
+    --white:    #FFFFFF;
+    --green:    #2E7D32;
+    --green-l:  #EBF5EB;
+    --red:      #B71C1C;
+    --red-l:    #FDECEA;
+    --amber:    #E65100;
+    --amber-l:  #FFF3E0;
+    --blue:     #1565C0;
+    --blue-l:   #E3F2FD;
+    --gray-l:   #F0F0F0;
+  }
+
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* ── Layout ── */
+  .topbar {
+    background: var(--dark);
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-dot { width: 10px; height: 10px; background: var(--orange); border-radius: 50%; }
+  .topbar h1 { font-size: 14px; font-weight: 500; color: #fff; flex: 1; }
+  .topbar-badge {
+    font-size: 11px; padding: 3px 12px;
+    background: rgba(232,119,34,0.2); color: var(--orange);
+    border-radius: 20px; font-weight: 500;
+  }
+  .topbar-month { font-size: 12px; color: #888; }
+
+  .container { max-width: 800px; margin: 0 auto; padding: 20px 16px; }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex; gap: 4px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 10px; padding: 4px; margin-bottom: 16px;
+  }
+  .tab {
+    flex: 1; padding: 8px; text-align: center;
+    font-size: 13px; cursor: pointer; border-radius: 8px;
+    border: none; background: transparent; color: var(--mid);
+    font-family: inherit; transition: all .15s;
+  }
+  .tab.on {
+    background: var(--dark); color: #fff; font-weight: 500;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; margin-bottom: 12px;
+  }
+  .card-head {
+    padding: 12px 18px; border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 500; color: var(--mid);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  /* ── Form ── */
+  .form-body { padding: 18px; }
+  .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .frow3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .fgroup { margin-bottom: 12px; }
+  .flabel { font-size: 11px; color: var(--mid); margin-bottom: 5px; font-weight: 500; display: block; }
+  input[type=text], select, textarea {
+    width: 100%; padding: 9px 12px;
+    border: 1px solid var(--border); border-radius: 8px;
+    font-size: 13px; color: var(--dark); background: var(--white);
+    font-family: inherit; outline: none;
+    transition: border-color .15s;
+  }
+  input[type=text]:focus, select:focus, textarea:focus { border-color: var(--orange); }
+  textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+  /* ── Buttons ── */
+  .btn {
+    padding: 8px 18px; border-radius: 8px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--dark); font-size: 13px; cursor: pointer;
+    font-family: inherit; transition: all .15s;
+  }
+  .btn:hover { background: var(--bg); }
+  .btn-primary {
+    background: var(--orange); color: #fff;
+    border-color: var(--orange); width: 100%; padding: 11px;
+    font-size: 14px; font-weight: 500;
+  }
+  .btn-primary:hover { background: var(--orange-d); }
+  .btn-sm { padding: 5px 12px; font-size: 11px; }
+  .btn-outline-orange { border-color: var(--orange); color: var(--orange); }
+  .btn-outline-orange:hover { background: var(--orange-l); }
+
+  /* ── Stats ── */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 16px; }
+  .stat { background: var(--bg); border-radius: 10px; padding: 12px; text-align: center; }
+  .stat-n { font-size: 24px; font-weight: 600; color: var(--orange); line-height: 1.1; }
+  .stat-l { font-size: 11px; color: var(--light); margin-top: 3px; }
+
+  /* ── Tags ── */
+  .tag {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    font-weight: 500; flex-shrink: 0;
+  }
+  .tag-update { background: var(--blue-l); color: var(--blue); }
+  .tag-result { background: var(--orange-l); color: var(--orange-d); }
+  .tag-plan   { background: var(--green-l); color: var(--green); }
+  .tag-issue  { background: var(--red-l); color: var(--red); }
+  .tag-data   { background: var(--gray-l); color: var(--mid); }
+
+  /* ── Filter bar ── */
+  .filter-bar {
+    padding: 10px 18px; border-bottom: 1px solid var(--border);
+    display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+  }
+  .filter-chip {
+    padding: 4px 12px; border-radius: 20px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--mid); font-size: 11px; cursor: pointer;
+    font-family: inherit; transition: all .15s;
+  }
+  .filter-chip.on {
+    background: var(--orange-l); color: var(--orange-d);
+    border-color: var(--orange); font-weight: 500;
+  }
+
+  /* ── Entry items ── */
+  .entry-item {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+  }
+  .entry-item:last-child { border-bottom: none; }
+  .entry-meta {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 6px; flex-wrap: wrap;
+  }
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--orange-l); color: var(--orange-d);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500; flex-shrink: 0;
+  }
+  .entry-author { font-size: 13px; font-weight: 500; }
+  .entry-dept { font-size: 11px; color: var(--light); }
+  .entry-date { font-size: 11px; color: var(--light); margin-left: auto; }
+  .entry-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .entry-content {
+    font-size: 12px; color: var(--mid); line-height: 1.7;
+    white-space: pre-wrap; word-break: break-word;
+  }
+
+  .empty {
+    padding: 40px; text-align: center;
+    color: var(--light); font-size: 13px; line-height: 2;
+  }
+
+  /* ── AI report ── */
+  .ai-out {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px;
+    font-size: 13px; line-height: 1.9;
+    white-space: pre-wrap; min-height: 80px;
+    word-break: break-word;
+  }
+  .ai-hint { color: var(--light); font-style: italic; }
+
+  /* ── Toast ── */
+  .toast {
+    display: none; position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%);
+    padding: 11px 24px; background: var(--dark); color: #fff;
+    border-radius: 10px; font-size: 13px; z-index: 999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+
+  /* ── Config warning ── */
+  .config-warn {
+    background: var(--amber-l); border: 1px solid #FFCC80;
+    border-radius: 10px; padding: 14px 18px; margin-bottom: 16px;
+    font-size: 13px; color: var(--amber); line-height: 1.7;
+  }
+  .config-warn strong { font-weight: 600; }
+
+  /* ── Loading ── */
+  .loading-mask {
+    display: none; position: fixed; inset: 0;
+    background: rgba(255,255,255,0.8);
+    align-items: center; justify-content: center;
+    z-index: 200; font-size: 14px; color: var(--mid);
+  }
+  .loading-mask.show { display: flex; }
+
+  @media (max-width: 600px) {
+    .frow, .frow3 { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .topbar h1 { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-dot"></div>
+  <h1>HR 工作台  ·  团队协作空间</h1>
+  <span class="topbar-month" id="topbar-month"></span>
+  <span class="topbar-badge" id="topbar-badge">加载中</span>
+</div>
+
+<div class="container">
+  <div id="config-warn" class="config-warn" style="display:none">
+    <strong>⚠ 尚未配置存储</strong>：请打开 index.html 文件，在顶部 CONFIG 区域填入你的 JSONBin BIN_ID 和 API_KEY，否则数据无法跨用户同步。<br>
+    详见部署教程。
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="sw('submit')">📝 提交记录</button>
+    <button class="tab" onclick="sw('view')">📋 查看全部</button>
+    <button class="tab" onclick="sw('report')">📊 生成汇报</button>
+  </div>
+
+  <!-- ── SUBMIT ── -->
+  <div id="pane-submit">
+    <div class="card">
+      <div class="card-head">填写本次记录</div>
+      <div class="form-body">
+        <div class="frow">
+          <div>
+            <label class="flabel">你的姓名 *</label>
+            <input type="text" id="f-name" placeholder="如：张明">
+          </div>
+          <div>
+            <label class="flabel">所属部门 / 项目组</label>
+            <select id="f-dept">
+              <option value="">请选择（可不填）</option>
+              <option>员工服务部</option>
+              <option>干部管理部</option>
+              <option>薪酬福利部</option>
+              <option>数字化运营组</option>
+              <option>产品组</option>
+              <option>技术组</option>
+            </select>
+          </div>
+        </div>
+        <div class="frow">
+          <div>
+            <label class="flabel">记录类型 *</label>
+            <select id="f-type">
+              <option value="update">进展更新</option>
+              <option value="result">阶段成果</option>
+              <option value="plan">计划方案</option>
+              <option value="issue">问题风险</option>
+              <option value="data">数据指标</option>
+            </select>
+          </div>
+          <div>
+            <label class="flabel">标题 *</label>
+            <input type="text" id="f-title" placeholder="一句话概括这条记录">
+          </div>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">详细内容（可直接粘贴原文、数据、会议结论）</label>
+          <textarea id="f-content" placeholder="不需要整理格式，粘贴原始内容即可，生成汇报时 AI 会自动提炼和归类..."></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="submitEntry()">提交记录</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VIEW ── -->
+  <div id="pane-view" style="display:none">
+    <div class="card">
+      <div class="stats" id="stats"></div>
+      <div class="filter-bar" id="filter-bar"></div>
+      <div id="entry-list"></div>
+    </div>
+  </div>
+
+  <!-- ── REPORT ── -->
+  <div id="pane-report" style="display:none">
+    <div class="card">
+      <div class="card-head">AI 汇报生成</div>
+      <div class="form-body">
+        <div class="frow" style="margin-bottom:12px">
+          <div>
+            <label class="flabel">汇报类型</label>
+            <select id="r-type">
+              <option value="monthly">月度例会汇报</option>
+              <option value="summary">月度工作总结</option>
+              <option value="plan">下月工作计划</option>
+              <option value="review">问题复盘</option>
+            </select>
+          </div>
+          <div>
+            <label class="flabel">补充指令（可选）</label>
+            <input type="text" id="r-extra" placeholder="如：面向 CHRO，重点突出数据表现">
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <button class="btn btn-outline-orange" style="flex:1" onclick="copyForClaude()">
+            📋 复制数据 → 去 Claude 生成
+          </button>
+          <button class="btn btn-primary" style="flex:1" onclick="genReportAI()">
+            ✦ 直接 AI 生成（需配置 API Key）
+          </button>
+        </div>
+
+        <div style="background:var(--blue-l);border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--blue);line-height:1.7">
+          <strong>💡 推荐用法：</strong>点「复制数据」→ 打开 Claude 对话 → 粘贴内容并发送「根据以上团队记录生成月度汇报」
+        </div>
+
+        <label class="flabel" style="margin-bottom:6px;display:block">AI 生成结果</label>
+        <div class="ai-out ai-hint" id="ai-out">
+点击上方按钮生成汇报。推荐使用「复制数据 → 去 Claude 生成」方式，效果更好且无需配置。
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn btn-sm" onclick="copyResult()">复制结果</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ 提交成功，感谢你的记录！</div>
+<div class="loading-mask" id="loading"><span>数据同步中...</span></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// ★ 配置区：填入你的 JSONBin 信息（必须修改才能多人共享）
+// ═══════════════════════════════════════════════════════════════
+const CONFIG = {
+  BIN_ID:  '69c10e98c3097a1dd54f3f00',   // 替换为你的 Bin ID，如：6512abc123def456789
+  API_KEY: '$2a$10$8RMHbU3kYJe4HvEUF5U5GuubAvXoBSCAaix96.i.x/Sra.YErQYYK',  // 替换为你的 Master Key，如：$2a$10$xxxx...
+  // 可选：配置 Anthropic API Key 以启用直接 AI 生成（不填则使用复制到 Claude 的方式）
+  ANTHROPIC_KEY: '',
+};
+// ═══════════════════════════════════════════════════════════════
+
+const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}`;
+const isConfigured = CONFIG.BIN_ID !== 'YOUR_BIN_ID_HERE';
+
+let allEntries = [];
+let filterType = 'all';
+
+const TL = { update:'进展更新', result:'阶段成果', plan:'计划方案', issue:'问题风险', data:'数据指标' };
+const TC = { update:'tag-update', result:'tag-result', plan:'tag-plan', issue:'tag-issue', data:'tag-data' };
+
+function getMonthKey() { return new Date().toISOString().slice(0,7); }
+function getMonthLabel(k) { const [y,m] = k.split('-'); return `${y} 年 ${parseInt(m)} 月`; }
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+// ── Data layer ──────────────────────────────────────────────────
+async function loadData() {
+  if (!isConfigured) {
+    document.getElementById('config-warn').style.display = 'block';
+    allEntries = JSON.parse(localStorage.getItem('hr_entries_local') || '[]');
+    renderAll();
+    return;
+  }
+  showLoading(true);
+  try {
+    const r = await fetch(JSONBIN_URL + '/latest', {
+      headers: { 'X-Master-Key': CONFIG.API_KEY }
+    });
+    const data = await r.json();
+    allEntries = data.record?.entries || [];
+  } catch(e) {
+    allEntries = [];
+    showToast('数据加载失败，请检查网络或 API 配置');
+  }
+  showLoading(false);
+  renderAll();
+}
+
+async function saveData() {
+  if (!isConfigured) {
+    localStorage.setItem('hr_entries_local', JSON.stringify(allEntries));
+    return;
+  }
+  try {
+    await fetch(JSONBIN_URL, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': CONFIG.API_KEY
+      },
+      body: JSON.stringify({ entries: allEntries })
+    });
+  } catch(e) {
+    showToast('同步失败，请检查网络');
+  }
+}
+
+// ── Submit ──────────────────────────────────────────────────────
+async function submitEntry() {
+  const name    = document.getElementById('f-name').value.trim();
+  const dept    = document.getElementById('f-dept').value;
+  const type    = document.getElementById('f-type').value;
+  const title   = document.getElementById('f-title').value.trim();
+  const content = document.getElementById('f-content').value.trim();
+
+  if (!name)  { highlight('f-name');  return; }
+  if (!title) { highlight('f-title'); return; }
+
+  resetHighlight('f-name'); resetHighlight('f-title');
+
+  showLoading(true);
+  const entry = {
+    id: genId(), name, dept, type, title, content,
+    month: getMonthKey(),
+    date: new Date().toLocaleDateString('zh-CN'),
+    time: new Date().toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit' })
+  };
+
+  // Save name preference
+  localStorage.setItem('hr_last_name', name);
+  if (dept) localStorage.setItem('hr_last_dept', dept);
+
+  allEntries.unshift(entry);
+  await saveData();
+  showLoading(false);
+
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-content').value = '';
+  showToast('✓ 提交成功，感谢你的记录！');
+  renderAll();
+}
+
+// ── Render ──────────────────────────────────────────────────────
+function renderAll() {
+  const now = getMonthKey();
+  document.getElementById('topbar-month').textContent = getMonthLabel(now);
+  document.getElementById('topbar-badge').textContent = isConfigured ? '多人共享' : '本地模式';
+
+  // Restore last used name
+  const lastN = localStorage.getItem('hr_last_name');
+  const lastD = localStorage.getItem('hr_last_dept');
+  if (lastN && !document.getElementById('f-name').value) {
+    document.getElementById('f-name').value = lastN;
+  }
+  if (lastD) document.getElementById('f-dept').value = lastD;
+
+  renderStats();
+  renderFilters();
+  renderEntries();
+}
+
+function renderStats() {
+  const cur = getMonthKey();
+  const month = allEntries.filter(e => e.month === cur);
+  const authors = new Set(month.map(e => e.name)).size;
+  const results = month.filter(e => e.type === 'result').length;
+  const issues  = month.filter(e => e.type === 'issue').length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="stat-n">${month.length}</div><div class="stat-l">本月总记录</div></div>
+    <div class="stat"><div class="stat-n">${authors}</div><div class="stat-l">参与成员</div></div>
+    <div class="stat"><div class="stat-n">${results}</div><div class="stat-l">阶段成果</div></div>
+    <div class="stat"><div class="stat-n">${issues}</div><div class="stat-l">问题风险</div></div>`;
+}
+
+function renderFilters() {
+  const cur = getMonthKey();
+  const month = allEntries.filter(e => e.month === cur);
+  const types = ['all', ...new Set(month.map(e => e.type))];
+  const label = { all:'全部', update:'进展', result:'成果', plan:'计划', issue:'问题', data:'数据' };
+  const cnt = { all: month.length };
+  types.filter(t => t !== 'all').forEach(t => {
+    cnt[t] = month.filter(e => e.type === t).length;
+  });
+  document.getElementById('filter-bar').innerHTML =
+    '<span style="font-size:11px;color:var(--light)">筛选：</span>' +
+    types.map(t =>
+      `<button class="filter-chip${t === filterType ? ' on' : ''}" onclick="setFilter('${t}')">
+        ${label[t] || t} ${cnt[t] || ''}
+      </button>`
+    ).join('');
+}
+
+function setFilter(t) { filterType = t; renderFilters(); renderEntries(); }
+
+function renderEntries() {
+  const cur = getMonthKey();
+  let month = allEntries.filter(e => e.month === cur);
+  if (filterType !== 'all') month = month.filter(e => e.type === filterType);
+  const list = document.getElementById('entry-list');
+  if (!month.length) {
+    list.innerHTML = '<div class="empty">本月暂无记录<br>切到「提交记录」开始录入吧</div>';
+    return;
+  }
+  list.innerHTML = month.map(e => `
+    <div class="entry-item">
+      <div class="entry-meta">
+        <div class="avatar">${e.name.slice(0,1)}</div>
+        <span class="entry-author">${e.name}</span>
+        ${e.dept ? `<span class="entry-dept">${e.dept}</span>` : ''}
+        <span class="tag ${TC[e.type] || 'tag-data'}">${TL[e.type] || e.type}</span>
+        <span class="entry-date">${e.date} ${e.time || ''}</span>
+      </div>
+      <div class="entry-title">${escHtml(e.title)}</div>
+      ${e.content ? `<div class="entry-content">${escHtml(e.content)}</div>` : ''}
+    </div>`).join('');
+}
+
+// ── Report ──────────────────────────────────────────────────────
+function copyForClaude() {
+  const cur = getMonthKey();
+  const month = allEntries.filter(e => e.month === cur);
+  if (!month.length) { showToast('本月暂无记录'); return; }
+
+  const rtype = document.getElementById('r-type').value;
+  const extra = document.getElementById('r-extra').value.trim();
+  const rtLabel = {
+    monthly:'请基于以下团队记录生成月度例会汇报，结构：核心亮点（3条内）→ 关键数据 → 问题与风险 → 下步行动。',
+    summary:'请基于以下团队记录生成月度工作总结，结构：完成事项 → 核心成果 → 问题与解决方案 → 经验反思。',
+    plan:   '请基于以下团队记录生成下月工作计划，包括：延续推进 → 新增计划 → 时间节点 → 所需支持。',
+    review: '请对以下团队记录中的问题和风险进行复盘，结构：问题梳理 → 根因分析 → 影响评估 → 改善措施。',
+  };
+
+  const lines = month.map(e =>
+    `【${e.name}${e.dept ? '/'+e.dept : ''}】[${TL[e.type]}] ${e.title}${e.content ? '\n' + e.content : ''}`
+  ).join('\n\n');
+
+  const text = `${rtLabel[rtype]}\n${extra ? '\n特别要求：' + extra + '\n' : ''}
+【月份】${getMonthLabel(cur)}
+
+【团队本月记录】
+${lines}`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('✓ 已复制！请粘贴到 Claude 对话中发送');
+  }).catch(() => {
+    document.getElementById('ai-out').textContent = text;
+    document.getElementById('ai-out').className = 'ai-out';
+    showToast('已显示在下方，请手动复制');
+  });
+}
+
+async function genReportAI() {
+  if (!CONFIG.ANTHROPIC_KEY) {
+    showToast('未配置 Anthropic API Key，请使用「复制数据 → 去 Claude 生成」');
+    return;
+  }
+  const cur = getMonthKey();
+  const month = allEntries.filter(e => e.month === cur);
+  if (!month.length) { showToast('本月暂无记录'); return; }
+
+  const out = document.getElementById('ai-out');
+  out.className = 'ai-out ai-hint';
+  out.textContent = 'AI 正在整理内容，请稍候...';
+
+  const rtype = document.getElementById('r-type').value;
+  const extra = document.getElementById('r-extra').value.trim();
+  const lines = month.map(e =>
+    `[${e.name}${e.dept?'/'+e.dept:''}][${TL[e.type]}] ${e.title}\n${e.content||''}`
+  ).join('\n\n');
+
+  const inst = {
+    monthly:'生成月度例会汇报，结构：核心亮点（3条内）→ 关键数据 → 问题与风险 → 下步行动。',
+    summary:'生成月度工作总结，结构：完成事项 → 核心成果 → 问题与解决方案 → 经验反思。',
+    plan:   '生成下月工作计划：延续推进 → 新增计划 → 时间节点 → 所需支持资源。',
+    review: '复盘问题和风险：问题梳理 → 根因分析 → 影响评估 → 改善措施。',
+  };
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': CONFIG.ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514', max_tokens: 1000,
+        system: '你是 HR 数字化产品总监助理，擅长将团队进展整理成清晰有逻辑的汇报材料。风格简练专业，重要数字加粗，按部门或主题归类。',
+        messages: [{ role: 'user', content: `${inst[rtype]}\n\n【月份】${getMonthLabel(cur)}\n${extra?'【特别要求】'+extra+'\n':''}\n【团队记录】\n${lines}` }]
+      })
+    });
+    const data = await resp.json();
+    const text = (data.content||[]).filter(b => b.type==='text').map(b => b.text).join('');
+    out.className = 'ai-out';
+    out.textContent = text || '生成失败，请重试。';
+  } catch(e) {
+    out.className = 'ai-out';
+    out.textContent = '请求失败：' + e.message;
+  }
+}
+
+function copyResult() {
+  const text = document.getElementById('ai-out').textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('✓ 已复制'));
+}
+
+// ── Utils ────────────────────────────────────────────────────────
+function sw(t) {
+  ['submit','view','report'].forEach(p => {
+    document.getElementById('pane-'+p).style.display = p===t ? '' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((b,i) => {
+    b.className = 'tab' + (['submit','view','report'][i]===t?' on':'');
+  });
+  if (t === 'view' || t === 'report') { renderStats(); renderFilters(); renderEntries(); }
+  if (t === 'view') loadData();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => t.style.display='none', 2800);
+}
+
+function showLoading(v) {
+  document.getElementById('loading').className = 'loading-mask' + (v?' show':'');
+}
+
+function highlight(id) {
+  document.getElementById(id).style.borderColor = 'var(--orange)';
+  document.getElementById(id).focus();
+}
+function resetHighlight(id) {
+  document.getElementById(id).style.borderColor = '';
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Init ────────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
