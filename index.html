@@ -3,655 +3,640 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HR 工作台 · 团队协作空间</title>
+<title>HR 工作台 · 月度工作汇报</title>
 <style>
-  /* ── 配置区：修改这里填入你的 JSONBin 信息 ── */
-  /* 见下方 JS 的 CONFIG 对象 */
+*{box-sizing:border-box;margin:0;padding:0}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+  --orange:#E87722;--orange-l:#FEF0E4;--orange-d:#B85010;
+  --dark:#1A1A1A;--mid:#555;--light:#999;
+  --border:#E4E4E4;--bg:#F5F5F5;--white:#FFFFFF;
+  --panel:#F8F8F8;
+  --green:#2E7D32;--green-l:#EBF5EB;
+  --red:#B71C1C;--red-l:#FDECEA;
+  --blue:#1565C0;--blue-l:#E3F2FD;
+  --radius:10px;--radius-sm:7px;
+}
 
-  :root {
-    --orange:   #E87722;
-    --orange-l: #FEF0E4;
-    --orange-d: #B85010;
-    --dark:     #1A1A1A;
-    --mid:      #555;
-    --light:    #999;
-    --border:   #E4E4E4;
-    --bg:       #F5F5F5;
-    --white:    #FFFFFF;
-    --green:    #2E7D32;
-    --green-l:  #EBF5EB;
-    --red:      #B71C1C;
-    --red-l:    #FDECEA;
-    --amber:    #E65100;
-    --amber-l:  #FFF3E0;
-    --blue:     #1565C0;
-    --blue-l:   #E3F2FD;
-    --gray-l:   #F0F0F0;
-  }
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--dark);font-size:14px;min-height:100vh}
 
-  body {
-    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    background: var(--bg);
-    color: var(--dark);
-    min-height: 100vh;
-  }
+/* ── Topbar ── */
+.topbar{background:var(--dark);padding:0 24px;height:54px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.topbar-dot{width:10px;height:10px;border-radius:50%;background:var(--orange)}
+.topbar h1{font-size:14px;font-weight:500;color:#fff;flex:1}
+.topbar-badge{font-size:12px;padding:4px 12px;background:rgba(232,119,34,.2);color:var(--orange);border-radius:20px;font-weight:500}
 
-  /* ── Layout ── */
-  .topbar {
-    background: var(--dark);
-    padding: 0 24px;
-    height: 52px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .topbar-dot { width: 10px; height: 10px; background: var(--orange); border-radius: 50%; }
-  .topbar h1 { font-size: 14px; font-weight: 500; color: #fff; flex: 1; }
-  .topbar-badge {
-    font-size: 11px; padding: 3px 12px;
-    background: rgba(232,119,34,0.2); color: var(--orange);
-    border-radius: 20px; font-weight: 500;
-  }
-  .topbar-month { font-size: 12px; color: #888; }
+/* ── Nav tabs ── */
+.nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;padding:0 24px;gap:0}
+.nav-tab{padding:14px 20px;font-size:14px;cursor:pointer;border-bottom:2px solid transparent;color:var(--light);transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit}
+.nav-tab:hover{color:var(--dark)}
+.nav-tab.on{color:var(--orange);border-bottom-color:var(--orange);font-weight:500}
 
-  .container { max-width: 800px; margin: 0 auto; padding: 20px 16px; }
+.container{max-width:760px;margin:0 auto;padding:20px 16px}
 
-  /* ── Tabs ── */
-  .tabs {
-    display: flex; gap: 4px;
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: 10px; padding: 4px; margin-bottom: 16px;
-  }
-  .tab {
-    flex: 1; padding: 8px; text-align: center;
-    font-size: 13px; cursor: pointer; border-radius: 8px;
-    border: none; background: transparent; color: var(--mid);
-    font-family: inherit; transition: all .15s;
-  }
-  .tab.on {
-    background: var(--dark); color: #fff; font-weight: 500;
-  }
+/* ── Goal card ── */
+.goal-card{background:var(--dark);border-radius:var(--radius);padding:22px;margin-bottom:16px;position:relative;overflow:hidden}
+.goal-card::before{content:'2026';position:absolute;right:-8px;top:-20px;font-size:96px;font-weight:700;color:rgba(255,255,255,0.04);line-height:1;pointer-events:none}
+.goal-label{font-size:11px;font-weight:600;color:var(--orange);letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.goal-label::before{content:'';width:18px;height:2px;background:var(--orange);display:inline-block;flex-shrink:0}
+.goal-headline{font-size:15px;font-weight:500;color:#fff;margin-bottom:18px;line-height:1.6}
+.goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.goal-item{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);padding:13px 15px;display:flex;align-items:flex-start;gap:11px}
+.gi-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.gi-o{background:rgba(232,119,34,.2)}
+.gi-b{background:rgba(33,150,243,.15)}
+.gi-g{background:rgba(46,125,50,.2)}
+.gi-p{background:rgba(123,31,162,.2)}
+.gi-title{font-size:13px;font-weight:500;color:#fff;margin-bottom:3px}
+.gi-desc{font-size:12px;color:rgba(255,255,255,.45);line-height:1.6}
 
-  /* ── Card ── */
-  .card {
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: 12px; overflow: hidden; margin-bottom: 12px;
-  }
-  .card-head {
-    padding: 12px 18px; border-bottom: 1px solid var(--border);
-    font-size: 12px; font-weight: 500; color: var(--mid);
-    display: flex; align-items: center; justify-content: space-between;
-  }
+/* ── Progress bar ── */
+.progress{display:flex;gap:6px;align-items:center;margin-bottom:16px}
+.prog-step{flex:1;height:4px;border-radius:2px;background:var(--border);transition:background .3s}
+.prog-step.done{background:var(--orange)}
+.prog-label{font-size:12px;color:var(--light);white-space:nowrap}
 
-  /* ── Form ── */
-  .form-body { padding: 18px; }
-  .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-  .frow3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-  .fgroup { margin-bottom: 12px; }
-  .flabel { font-size: 11px; color: var(--mid); margin-bottom: 5px; font-weight: 500; display: block; }
-  input[type=text], select, textarea {
-    width: 100%; padding: 9px 12px;
-    border: 1px solid var(--border); border-radius: 8px;
-    font-size: 13px; color: var(--dark); background: var(--white);
-    font-family: inherit; outline: none;
-    transition: border-color .15s;
-  }
-  input[type=text]:focus, select:focus, textarea:focus { border-color: var(--orange); }
-  textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+/* ── Section card ── */
+.section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
+.sec-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sec-num{width:26px;height:26px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-num.g{background:var(--panel);color:var(--light);border:1px solid var(--border)}
+.sec-title{font-size:14px;font-weight:500;flex:1}
+.badge-req{font-size:12px;color:var(--orange);background:var(--orange-l);padding:3px 10px;border-radius:10px}
+.badge-opt{font-size:12px;color:var(--light);background:var(--panel);padding:3px 10px;border-radius:10px}
+.sec-body{padding:16px 18px}
 
-  /* ── Buttons ── */
-  .btn {
-    padding: 8px 18px; border-radius: 8px;
-    border: 1px solid var(--border); background: transparent;
-    color: var(--dark); font-size: 13px; cursor: pointer;
-    font-family: inherit; transition: all .15s;
-  }
-  .btn:hover { background: var(--bg); }
-  .btn-primary {
-    background: var(--orange); color: #fff;
-    border-color: var(--orange); width: 100%; padding: 11px;
-    font-size: 14px; font-weight: 500;
-  }
-  .btn-primary:hover { background: var(--orange-d); }
-  .btn-sm { padding: 5px 12px; font-size: 11px; }
-  .btn-outline-orange { border-color: var(--orange); color: var(--orange); }
-  .btn-outline-orange:hover { background: var(--orange-l); }
+/* ── Name chips ── */
+.name-grid{display:flex;gap:10px;flex-wrap:wrap}
+.name-chip{padding:10px 24px;border-radius:24px;border:1px solid var(--border);background:transparent;color:var(--mid);font-size:14px;cursor:pointer;font-family:inherit;transition:all .15s}
+.name-chip:hover{border-color:var(--orange);color:var(--orange)}
+.name-chip.sel{background:var(--orange);color:#fff;border-color:var(--orange);font-weight:500}
 
-  /* ── Stats ── */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 16px; }
-  .stat { background: var(--bg); border-radius: 10px; padding: 12px; text-align: center; }
-  .stat-n { font-size: 24px; font-weight: 600; color: var(--orange); line-height: 1.1; }
-  .stat-l { font-size: 11px; color: var(--light); margin-top: 3px; }
+/* ── Project cards ── */
+.proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.proj-card{padding:14px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;cursor:pointer;text-align:left;font-family:inherit;transition:all .15s}
+.proj-card:hover{border-color:var(--orange);background:var(--orange-l)}
+.proj-card.sel{border-color:var(--orange);background:var(--orange-l)}
+.proj-card .pn{font-size:14px;font-weight:500;color:var(--dark);display:block;margin-bottom:4px}
+.proj-card .pd{font-size:12px;color:var(--light);line-height:1.55}
+.proj-card.sel .pn{color:var(--orange-d)}
+.proj-card.sel .pd{color:#C07030}
 
-  /* ── Tags ── */
-  .tag {
-    font-size: 10px; padding: 2px 8px; border-radius: 10px;
-    font-weight: 500; flex-shrink: 0;
-  }
-  .tag-update { background: var(--blue-l); color: var(--blue); }
-  .tag-result { background: var(--orange-l); color: var(--orange-d); }
-  .tag-plan   { background: var(--green-l); color: var(--green); }
-  .tag-issue  { background: var(--red-l); color: var(--red); }
-  .tag-data   { background: var(--gray-l); color: var(--mid); }
+/* ── Textarea ── */
+textarea{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--white);color:var(--dark);font-family:inherit;outline:none;resize:vertical;line-height:1.8;transition:border-color .15s}
+textarea:focus{border-color:var(--orange)}
+.hint{font-size:12px;color:var(--mid);margin-top:8px;padding:11px 14px;background:var(--panel);border-radius:var(--radius-sm);border-left:3px solid var(--border);line-height:1.8}
 
-  /* ── Filter bar ── */
-  .filter-bar {
-    padding: 10px 18px; border-bottom: 1px solid var(--border);
-    display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
-  }
-  .filter-chip {
-    padding: 4px 12px; border-radius: 20px;
-    border: 1px solid var(--border); background: transparent;
-    color: var(--mid); font-size: 11px; cursor: pointer;
-    font-family: inherit; transition: all .15s;
-  }
-  .filter-chip.on {
-    background: var(--orange-l); color: var(--orange-d);
-    border-color: var(--orange); font-weight: 500;
-  }
+/* ── Data table ── */
+.dt-wrap{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.dt-head{display:grid;grid-template-columns:26% 21% 17% 1fr 34px;background:var(--panel);border-bottom:1px solid var(--border)}
+.dt-head span{font-size:12px;font-weight:500;color:var(--light);padding:9px 10px}
+.dt-row{display:grid;grid-template-columns:26% 21% 17% 1fr 34px;border-bottom:1px solid var(--border)}
+.dt-row:last-child{border-bottom:none}
+.dt-row input{width:100%;padding:11px 10px;border:none;border-right:1px solid var(--border);font-size:13px;background:transparent;color:var(--dark);font-family:inherit;outline:none}
+.dt-row input:last-of-type{border-right:none}
+.dt-row input:focus{background:#FFFBF8}
+.del-btn{border:none;background:transparent;color:var(--light);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:color .15s;padding:0}
+.del-btn:hover{color:var(--red)}
+.add-row-btn{width:100%;padding:11px;border:none;border-top:1px dashed var(--border);background:transparent;color:var(--light);font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s}
+.add-row-btn:hover{background:var(--panel);color:var(--orange)}
 
-  /* ── Entry items ── */
-  .entry-item {
-    padding: 14px 18px; border-bottom: 1px solid var(--border);
-  }
-  .entry-item:last-child { border-bottom: none; }
-  .entry-meta {
-    display: flex; align-items: center; gap: 8px;
-    margin-bottom: 6px; flex-wrap: wrap;
-  }
-  .avatar {
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--orange-l); color: var(--orange-d);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 500; flex-shrink: 0;
-  }
-  .entry-author { font-size: 13px; font-weight: 500; }
-  .entry-dept { font-size: 11px; color: var(--light); }
-  .entry-date { font-size: 11px; color: var(--light); margin-left: auto; }
-  .entry-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
-  .entry-content {
-    font-size: 12px; color: var(--mid); line-height: 1.7;
-    white-space: pre-wrap; word-break: break-word;
-  }
+/* ── Submit button ── */
+.btn-submit{width:100%;padding:14px;background:var(--orange);color:#fff;border:none;border-radius:var(--radius);font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;transition:background .15s;margin-top:4px}
+.btn-submit:hover{background:var(--orange-d)}
+.btn-submit:disabled{background:var(--border);color:var(--light);cursor:not-allowed}
 
-  .empty {
-    padding: 40px; text-align: center;
-    color: var(--light); font-size: 13px; line-height: 2;
-  }
+/* ── Success card ── */
+.success-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px 24px;text-align:center;display:none}
+.success-card.show{display:block}
+.s-icon{width:56px;height:56px;border-radius:50%;background:var(--green-l);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;color:var(--green)}
+.s-title{font-size:17px;font-weight:500;margin-bottom:6px}
+.s-sub{font-size:13px;color:var(--light);margin-bottom:22px;line-height:1.8}
+.s-meta{background:var(--panel);border-radius:var(--radius-sm);padding:14px 16px;text-align:left;margin-bottom:20px}
+.s-row{display:flex;gap:10px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);line-height:1.6}
+.s-row:last-child{border-bottom:none}
+.s-label{color:var(--light);width:72px;flex-shrink:0;font-size:12px;padding-top:1px}
+.s-val{color:var(--dark);flex:1;word-break:break-word}
+.btn-edit{width:100%;padding:13px;background:transparent;color:var(--orange);border:1.5px solid var(--orange);border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-edit:hover{background:var(--orange-l)}
 
-  /* ── AI report ── */
-  .ai-out {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: 10px; padding: 16px;
-    font-size: 13px; line-height: 1.9;
-    white-space: pre-wrap; min-height: 80px;
-    word-break: break-word;
-  }
-  .ai-hint { color: var(--light); font-style: italic; }
+/* ── View tab ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center}
+.stat-n{font-size:26px;font-weight:600;color:var(--orange);line-height:1.1}
+.stat-l{font-size:12px;color:var(--light);margin-top:4px}
 
-  /* ── Toast ── */
-  .toast {
-    display: none; position: fixed; bottom: 24px; left: 50%;
-    transform: translateX(-50%);
-    padding: 11px 24px; background: var(--dark); color: #fff;
-    border-radius: 10px; font-size: 13px; z-index: 999;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  }
+.filter-bar{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filter-label{font-size:12px;color:var(--light)}
+.fchip{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--mid);font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s}
+.fchip:hover{border-color:var(--orange);color:var(--orange)}
+.fchip.on{background:var(--orange-l);color:var(--orange-d);border-color:var(--orange);font-weight:500}
 
-  /* ── Config warning ── */
-  .config-warn {
-    background: var(--amber-l); border: 1px solid #FFCC80;
-    border-radius: 10px; padding: 14px 18px; margin-bottom: 16px;
-    font-size: 13px; color: var(--amber); line-height: 1.7;
-  }
-  .config-warn strong { font-weight: 600; }
+.entries{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.entry{padding:16px 18px;border-bottom:1px solid var(--border)}
+.entry:last-child{border-bottom:none}
+.e-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--orange-l);color:var(--orange-d);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.e-name{font-size:13px;font-weight:500}
+.e-proj{font-size:11px;color:var(--light)}
+.e-date{font-size:11px;color:var(--light);margin-left:auto}
+.e-section{margin-bottom:10px}
+.e-sec-title{font-size:11px;font-weight:600;color:var(--orange);margin-bottom:4px;letter-spacing:.5px}
+.e-sec-body{font-size:13px;color:var(--mid);line-height:1.75;white-space:pre-wrap;word-break:break-word}
+.e-data-table{width:100%;border-collapse:collapse;margin-top:4px;font-size:12px}
+.e-data-table th{text-align:left;padding:5px 8px;background:var(--panel);color:var(--light);font-weight:500;border-bottom:1px solid var(--border)}
+.e-data-table td{padding:6px 8px;border-bottom:1px solid var(--border);color:var(--mid)}
+.e-data-table tr:last-child td{border-bottom:none}
+.empty{padding:48px;text-align:center;color:var(--light);font-size:13px;line-height:2}
 
-  /* ── Loading ── */
-  .loading-mask {
-    display: none; position: fixed; inset: 0;
-    background: rgba(255,255,255,0.8);
-    align-items: center; justify-content: center;
-    z-index: 200; font-size: 14px; color: var(--mid);
-  }
-  .loading-mask.show { display: flex; }
+/* ── Config warning ── */
+.cfg-warn{background:#FFF3E0;border:1px solid #FFCC80;border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;font-size:13px;color:#E65100;line-height:1.75}
+.cfg-warn strong{font-weight:600}
 
-  @media (max-width: 600px) {
-    .frow, .frow3 { grid-template-columns: 1fr; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
-    .topbar h1 { font-size: 13px; }
-  }
+/* ── Loading ── */
+.loading{display:none;position:fixed;inset:0;background:rgba(255,255,255,.8);align-items:center;justify-content:center;z-index:200;font-size:14px;color:var(--mid)}
+.loading.show{display:flex}
+
+/* ── Toast ── */
+.toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;background:var(--dark);color:#fff;border-radius:var(--radius);font-size:13px;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+
+@media(max-width:600px){
+  .proj-grid,.goal-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .dt-head,.dt-row{grid-template-columns:25% 20% 18% 1fr 30px}
+  .nav-tab{padding:12px 14px;font-size:13px}
+}
 </style>
 </head>
 <body>
 
+<!-- ════════════════════════════════════════════════════════════
+  ★ 配置区：填入 JSONBin 信息，完成后删掉这段注释
+  1. 注册 jsonbin.io → 获取 Master Key
+  2. 创建 Bin（内容填 {"entries":[]})→ 复制 Bin ID
+  3. 将下方两个值替换后重新上传到 GitHub
+════════════════════════════════════════════════════════════ -->
+<script>
+const CONFIG = {
+  BIN_ID:  '69c10e98c3097a1dd54f3f00',
+  API_KEY: '$2a$10$8RMHbU3kYJe4HvEUF5U5GuubAvXoBSCAaix96.i.x/Sra.YErQYYK',
+};
+</script>
+
 <div class="topbar">
   <div class="topbar-dot"></div>
-  <h1>HR 工作台  ·  团队协作空间</h1>
-  <span class="topbar-month" id="topbar-month"></span>
+  <h1>HR 工作台  ·  月度工作汇报</h1>
   <span class="topbar-badge" id="topbar-badge">加载中</span>
 </div>
 
+<div class="nav">
+  <button class="nav-tab on" onclick="sw('submit')">📝  提交记录</button>
+  <button class="nav-tab" onclick="sw('view')">📋  查看全部</button>
+</div>
+
 <div class="container">
-  <div id="config-warn" class="config-warn" style="display:none">
-    <strong>⚠ 尚未配置存储</strong>：请打开 index.html 文件，在顶部 CONFIG 区域填入你的 JSONBin BIN_ID 和 API_KEY，否则数据无法跨用户同步。<br>
-    详见部署教程。
+  <div id="cfg-warn" class="cfg-warn" style="display:none">
+    <strong>⚠ 尚未配置数据库</strong>：数据目前仅存在本地浏览器，无法跨人共享。<br>
+    请打开 index.html，在顶部填入 JSONBin 的 BIN_ID 和 API_KEY，然后重新上传到 GitHub。
   </div>
 
-  <div class="tabs">
-    <button class="tab on" onclick="sw('submit')">📝 提交记录</button>
-    <button class="tab" onclick="sw('view')">📋 查看全部</button>
-    <button class="tab" onclick="sw('report')">📊 生成汇报</button>
-  </div>
-
-  <!-- ── SUBMIT ── -->
+  <!-- ════ SUBMIT PANE ════ -->
   <div id="pane-submit">
-    <div class="card">
-      <div class="card-head">填写本次记录</div>
-      <div class="form-body">
-        <div class="frow">
+
+    <!-- 年度目标 -->
+    <div class="goal-card">
+      <div class="goal-label">2026 年度目标</div>
+      <div class="goal-headline">打造拳头产品 · 用数据说话 · 以用促建 · 夯实底层能力</div>
+      <div class="goal-grid">
+        <div class="goal-item">
+          <div class="gi-icon gi-o">🏆</div>
           <div>
-            <label class="flabel">你的姓名 *</label>
-            <input type="text" id="f-name" placeholder="如：张明">
-          </div>
-          <div>
-            <label class="flabel">所属部门 / 项目组</label>
-            <select id="f-dept">
-              <option value="">请选择（可不填）</option>
-              <option>员工服务部</option>
-              <option>干部管理部</option>
-              <option>薪酬福利部</option>
-              <option>数字化运营组</option>
-              <option>产品组</option>
-              <option>技术组</option>
-            </select>
+            <div class="gi-title">3 大拳头产品</div>
+            <div class="gi-desc">HR 工作台 · AI 小助手 · 员工数据库，打造标杆体验</div>
           </div>
         </div>
-        <div class="frow">
+        <div class="goal-item">
+          <div class="gi-icon gi-b">🎯</div>
           <div>
-            <label class="flabel">记录类型 *</label>
-            <select id="f-type">
-              <option value="update">进展更新</option>
-              <option value="result">阶段成果</option>
-              <option value="plan">计划方案</option>
-              <option value="issue">问题风险</option>
-              <option value="data">数据指标</option>
-            </select>
-          </div>
-          <div>
-            <label class="flabel">标题 *</label>
-            <input type="text" id="f-title" placeholder="一句话概括这条记录">
+            <div class="gi-title">座谈会 + 报表大赛</div>
+            <div class="gi-desc">上半年召开成员公司座谈会，举办数据报表大赛，以用促建</div>
           </div>
         </div>
-        <div class="fgroup">
-          <label class="flabel">详细内容（可直接粘贴原文、数据、会议结论）</label>
-          <textarea id="f-content" placeholder="不需要整理格式，粘贴原始内容即可，生成汇报时 AI 会自动提炼和归类..."></textarea>
+        <div class="goal-item">
+          <div class="gi-icon gi-g">🤖</div>
+          <div>
+            <div class="gi-title">持续优化 AI 小助手</div>
+            <div class="gi-desc">提升回答准确性，以使用驱动数据治理和质量提升</div>
+          </div>
         </div>
-        <button class="btn btn-primary" onclick="submitEntry()">提交记录</button>
+        <div class="goal-item">
+          <div class="gi-icon gi-p">🔧</div>
+          <div>
+            <div class="gi-title">搭建底层通用能力</div>
+            <div class="gi-desc">意见反馈 · 数据看板 · 通用组件，支撑各场景复用</div>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <!-- 表单 -->
+    <div id="form-area">
+      <div class="progress">
+        <div class="prog-step" id="ps1"></div>
+        <div class="prog-step" id="ps2"></div>
+        <div class="prog-step" id="ps3"></div>
+        <div class="prog-step" id="ps4"></div>
+        <div class="prog-step" id="ps5"></div>
+        <span class="prog-label" id="prog-label">0 / 5 必填项完成</span>
+      </div>
+
+      <div class="section">
+        <div class="sec-head"><div class="sec-num">1</div><span class="sec-title">你是谁？</span><span class="badge-req">必填</span></div>
+        <div class="sec-body">
+          <div class="name-grid">
+            <button class="name-chip" onclick="selName('杰哥')">杰哥</button>
+            <button class="name-chip" onclick="selName('凯弟')">凯弟</button>
+            <button class="name-chip" onclick="selName('玉汝')">玉汝</button>
+            <button class="name-chip" onclick="selName('康妹')">康妹</button>
+            <button class="name-chip" onclick="selName('大林')">大林</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sec-head"><div class="sec-num">2</div><span class="sec-title">负责的项目</span><span class="badge-req">必填，可多选</span></div>
+        <div class="sec-body">
+          <div class="proj-grid">
+            <button class="proj-card" data-v="员工数据库" onclick="toggleProj(this)">
+              <span class="pn">员工数据库</span>
+              <span class="pd">Golden Record · 数据治理 · 主数据标准</span>
+            </button>
+            <button class="proj-card" data-v="AI小助手+报表" onclick="toggleProj(this)">
+              <span class="pn">AI 小助手 + 报表</span>
+              <span class="pd">问一问 · 智能分析 · 数据报表自动化</span>
+            </button>
+            <button class="proj-card" data-v="HR工作台" onclick="toggleProj(this)">
+              <span class="pn">HR 工作台</span>
+              <span class="pd">APP 端 · 合同 · 干部任免 · 考勤</span>
+            </button>
+            <button class="proj-card" data-v="运营" onclick="toggleProj(this)">
+              <span class="pn">运营</span>
+              <span class="pd">成员公司推广 · 用户激活 · 座谈会 / 大赛</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sec-head"><div class="sec-num">3</div><span class="sec-title">本月工作进展总结</span><span class="badge-req">必填</span></div>
+        <div class="sec-body">
+          <textarea id="f-progress" rows="5" placeholder="本月完成了哪些事项？按条列举即可，不用整理格式。" oninput="chk()"></textarea>
+          <div class="hint">
+            📌 填写示例<br>
+            · 完成 HR 工作台移动端合同模块适配，已通过测试，预计下周上线<br>
+            · 推进 3 家种子成员公司接入，平安证券本月完成上线<br>
+            · AI 小助手新增 50 条制度问答，准确率从 72% 提升至 81%
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sec-head"><div class="sec-num">4</div><span class="sec-title">上月上线模块的数据表现</span><span class="badge-req">必填</span></div>
+        <div class="sec-body">
+          <div class="dt-wrap">
+            <div class="dt-head">
+              <span>模块 / 功能名称</span><span>关键指标</span><span>数值</span><span>备注说明</span><span></span>
+            </div>
+            <div id="dt-body">
+              <div class="dt-row">
+                <input type="text" placeholder="如：合同续签功能">
+                <input type="text" placeholder="如：月活用户">
+                <input type="text" placeholder="如：1,240人">
+                <input type="text" placeholder="如：环比+336%">
+                <button class="del-btn" onclick="delRow(this)">×</button>
+              </div>
+              <div class="dt-row">
+                <input type="text" placeholder="如：AI小助手问一问">
+                <input type="text" placeholder="如：月咨询次数">
+                <input type="text" placeholder="如：25,500次">
+                <input type="text" placeholder="如：制度咨询占73%">
+                <button class="del-btn" onclick="delRow(this)">×</button>
+              </div>
+            </div>
+            <button class="add-row-btn" onclick="addRow()">＋ 添加一行数据</button>
+          </div>
+          <div class="hint" style="margin-top:8px">
+            📌 填写示例：HR 工作台 · 月活用户 · 285人 · 仅 PC 端，移动端适配后预计大幅提升
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sec-head"><div class="sec-num">5</div><span class="sec-title">下一步规划动作</span><span class="badge-req">必填</span></div>
+        <div class="sec-body">
+          <textarea id="f-plan" rows="5" placeholder="下个月或下一阶段打算做什么？尽量写清楚时间节点和目标。" oninput="chk()"></textarea>
+          <div class="hint">
+            📌 填写示例<br>
+            · 4月完成干部任免 APP 端适配，覆盖 B 级干部审批流程<br>
+            · Q2 推进 5 家成员公司接入，重点跟进平安银行和平安人寿<br>
+            · 月底前完成报表大赛方案设计，提交领导审批
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sec-head"><div class="sec-num g">6</div><span class="sec-title">存在的问题和困难</span><span class="badge-opt">选填</span></div>
+        <div class="sec-body">
+          <textarea id="f-issue" rows="4" placeholder="遇到了什么卡点？需要什么资源或支持？没有可以不填。"></textarea>
+          <div class="hint">
+            📌 填写示例<br>
+            · 干部管理部接口对接进度滞后，影响 Q2 上线，需协调推进<br>
+            · 成员公司推广缺乏激励机制，建议与 HRD 考核挂钩<br>
+            · 底层数据看板组件开发排期未确认，请领导协助协调 IT 资源
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-submit" id="submit-btn" onclick="doSubmit()" disabled>提交本月汇报</button>
+    </div>
+
+    <!-- 提交成功态 -->
+    <div class="success-card" id="success-card">
+      <div class="s-icon">✓</div>
+      <div class="s-title">提交成功</div>
+      <div class="s-sub">你的月度汇报已保存<br>负责人可在「查看全部」查看，月底统一生成汇报材料</div>
+      <div class="s-meta" id="s-meta"></div>
+      <button class="btn-edit" onclick="backToEdit()">✏️  修改内容并重新提交</button>
     </div>
   </div>
 
-  <!-- ── VIEW ── -->
+  <!-- ════ VIEW PANE ════ -->
   <div id="pane-view" style="display:none">
-    <div class="card">
-      <div class="stats" id="stats"></div>
-      <div class="filter-bar" id="filter-bar"></div>
-      <div id="entry-list"></div>
-    </div>
-  </div>
-
-  <!-- ── REPORT ── -->
-  <div id="pane-report" style="display:none">
-    <div class="card">
-      <div class="card-head">AI 汇报生成</div>
-      <div class="form-body">
-        <div class="frow" style="margin-bottom:12px">
-          <div>
-            <label class="flabel">汇报类型</label>
-            <select id="r-type">
-              <option value="monthly">月度例会汇报</option>
-              <option value="summary">月度工作总结</option>
-              <option value="plan">下月工作计划</option>
-              <option value="review">问题复盘</option>
-            </select>
-          </div>
-          <div>
-            <label class="flabel">补充指令（可选）</label>
-            <input type="text" id="r-extra" placeholder="如：面向 CHRO，重点突出数据表现">
-          </div>
-        </div>
-
-        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-          <button class="btn btn-outline-orange" style="flex:1" onclick="copyForClaude()">
-            📋 复制数据 → 去 Claude 生成
-          </button>
-          <button class="btn btn-primary" style="flex:1" onclick="genReportAI()">
-            ✦ 直接 AI 生成（需配置 API Key）
-          </button>
-        </div>
-
-        <div style="background:var(--blue-l);border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--blue);line-height:1.7">
-          <strong>💡 推荐用法：</strong>点「复制数据」→ 打开 Claude 对话 → 粘贴内容并发送「根据以上团队记录生成月度汇报」
-        </div>
-
-        <label class="flabel" style="margin-bottom:6px;display:block">AI 生成结果</label>
-        <div class="ai-out ai-hint" id="ai-out">
-点击上方按钮生成汇报。推荐使用「复制数据 → 去 Claude 生成」方式，效果更好且无需配置。
-        </div>
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <button class="btn btn-sm" onclick="copyResult()">复制结果</button>
-        </div>
-      </div>
-    </div>
+    <div class="stats" id="v-stats"></div>
+    <div class="filter-bar" id="v-filter"></div>
+    <div class="entries" id="v-list"></div>
   </div>
 </div>
 
-<div class="toast" id="toast">✓ 提交成功，感谢你的记录！</div>
-<div class="loading-mask" id="loading"><span>数据同步中...</span></div>
+<div class="loading" id="loading">数据同步中...</div>
+<div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// ★ 配置区：填入你的 JSONBin 信息（必须修改才能多人共享）
-// ═══════════════════════════════════════════════════════════════
-const CONFIG = {
-  BIN_ID:  '69c10e98c3097a1dd54f3f00',   // 替换为你的 Bin ID，如：6512abc123def456789
-  API_KEY: '$2a$10$8RMHbU3kYJe4HvEUF5U5GuubAvXoBSCAaix96.i.x/Sra.YErQYYK',  // 替换为你的 Master Key，如：$2a$10$xxxx...
-  // 可选：配置 Anthropic API Key 以启用直接 AI 生成（不填则使用复制到 Claude 的方式）
-  ANTHROPIC_KEY: '',
+// ── State ──────────────────────────────────────────────────────
+const JSONBIN = `https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}`;
+const IS_CFG  = CONFIG.BIN_ID !== 'YOUR_BIN_ID_HERE';
+let   ALL     = [];
+let   SEL_NAME = '';
+let   SEL_PROJS = [];
+let   FILTER  = 'all';
+let   CUR_TAB = 'submit';
+
+// ── Utils ──────────────────────────────────────────────────────
+const mKey   = () => new Date().toISOString().slice(0,7);
+const mLabel = k  => { const [y,m]=k.split('-'); return `${y}年${parseInt(m)}月`; };
+const genId  = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc    = s  => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const toast  = (msg,ms=2800) => {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.display='block';
+  clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',ms);
 };
-// ═══════════════════════════════════════════════════════════════
+const load   = v => document.getElementById('loading').className='loading'+(v?' show':'');
 
-const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}`;
-const isConfigured = CONFIG.BIN_ID !== 'YOUR_BIN_ID_HERE';
-
-let allEntries = [];
-let filterType = 'all';
-
-const TL = { update:'进展更新', result:'阶段成果', plan:'计划方案', issue:'问题风险', data:'数据指标' };
-const TC = { update:'tag-update', result:'tag-result', plan:'tag-plan', issue:'tag-issue', data:'tag-data' };
-
-function getMonthKey() { return new Date().toISOString().slice(0,7); }
-function getMonthLabel(k) { const [y,m] = k.split('-'); return `${y} 年 ${parseInt(m)} 月`; }
-function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-
-// ── Data layer ──────────────────────────────────────────────────
-async function loadData() {
-  if (!isConfigured) {
-    document.getElementById('config-warn').style.display = 'block';
-    allEntries = JSON.parse(localStorage.getItem('hr_entries_local') || '[]');
-    renderAll();
-    return;
-  }
-  showLoading(true);
-  try {
-    const r = await fetch(JSONBIN_URL + '/latest', {
-      headers: { 'X-Master-Key': CONFIG.API_KEY }
+// ── Init ──────────────────────────────────────────────────────
+(async function init(){
+  document.getElementById('topbar-badge').textContent = mLabel(mKey());
+  if(!IS_CFG){ document.getElementById('cfg-warn').style.display='block'; }
+  await fetchData();
+  // restore last name
+  const ln=localStorage.getItem('hr_last_name');
+  if(ln) selName(ln);
+  const ld=localStorage.getItem('hr_last_dept');
+  if(ld){
+    document.querySelectorAll('.proj-card').forEach(c=>{
+      if(c.dataset.v===ld){ toggleProj(c,true); }
     });
-    const data = await r.json();
-    allEntries = data.record?.entries || [];
-  } catch(e) {
-    allEntries = [];
-    showToast('数据加载失败，请检查网络或 API 配置');
   }
-  showLoading(false);
-  renderAll();
+})();
+
+// ── Data ──────────────────────────────────────────────────────
+async function fetchData(){
+  if(!IS_CFG){ ALL=JSON.parse(localStorage.getItem('hr_local')||'[]'); return; }
+  load(true);
+  try{
+    const r=await fetch(JSONBIN+'/latest',{headers:{'X-Master-Key':CONFIG.API_KEY}});
+    const d=await r.json();
+    ALL=d.record?.entries||[];
+  }catch(e){ ALL=[]; }
+  load(false);
 }
 
-async function saveData() {
-  if (!isConfigured) {
-    localStorage.setItem('hr_entries_local', JSON.stringify(allEntries));
-    return;
-  }
-  try {
-    await fetch(JSONBIN_URL, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Master-Key': CONFIG.API_KEY
-      },
-      body: JSON.stringify({ entries: allEntries })
+async function pushData(){
+  if(!IS_CFG){ localStorage.setItem('hr_local',JSON.stringify(ALL)); return; }
+  try{
+    await fetch(JSONBIN,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':CONFIG.API_KEY},
+      body:JSON.stringify({entries:ALL})
     });
-  } catch(e) {
-    showToast('同步失败，请检查网络');
-  }
+  }catch(e){ toast('同步失败，请检查网络'); }
 }
 
-// ── Submit ──────────────────────────────────────────────────────
-async function submitEntry() {
-  const name    = document.getElementById('f-name').value.trim();
-  const dept    = document.getElementById('f-dept').value;
-  const type    = document.getElementById('f-type').value;
-  const title   = document.getElementById('f-title').value.trim();
-  const content = document.getElementById('f-content').value.trim();
+// ── Tab switch ────────────────────────────────────────────────
+function sw(t){
+  CUR_TAB=t;
+  document.getElementById('pane-submit').style.display=t==='submit'?'':'none';
+  document.getElementById('pane-view').style.display=t==='view'?'':'none';
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>{
+    b.className='nav-tab'+(['submit','view'][i]===t?' on':'');
+  });
+  if(t==='view'){ fetchData().then(renderView); }
+}
 
-  if (!name)  { highlight('f-name');  return; }
-  if (!title) { highlight('f-title'); return; }
+// ── Form helpers ──────────────────────────────────────────────
+function selName(n){
+  SEL_NAME=n;
+  document.querySelectorAll('.name-chip').forEach(c=>{
+    c.className='name-chip'+(c.textContent===n?' sel':'');
+  });
+  chk();
+}
 
-  resetHighlight('f-name'); resetHighlight('f-title');
+function toggleProj(el, silent){
+  const v=el.dataset.v;
+  const idx=SEL_PROJS.indexOf(v);
+  if(idx>=0){ SEL_PROJS.splice(idx,1); el.className='proj-card'; }
+  else { SEL_PROJS.push(v); el.className='proj-card sel'; }
+  if(!silent) chk();
+}
 
-  showLoading(true);
-  const entry = {
-    id: genId(), name, dept, type, title, content,
-    month: getMonthKey(),
-    date: new Date().toLocaleDateString('zh-CN'),
-    time: new Date().toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit' })
+function addRow(){
+  const tb=document.getElementById('dt-body');
+  const row=document.createElement('div');
+  row.className='dt-row';
+  row.innerHTML=`
+    <input type="text" placeholder="模块 / 功能名称">
+    <input type="text" placeholder="关键指标名称">
+    <input type="text" placeholder="具体数值">
+    <input type="text" placeholder="备注说明">
+    <button class="del-btn" onclick="delRow(this)">×</button>`;
+  tb.appendChild(row);
+  row.querySelector('input').focus();
+  row.addEventListener('input',chk);
+}
+
+function delRow(btn){
+  const rows=document.querySelectorAll('#dt-body .dt-row');
+  if(rows.length<=1) return;
+  btn.closest('.dt-row').remove(); chk();
+}
+
+function hasData(){
+  for(let r of document.querySelectorAll('#dt-body .dt-row')){
+    const ins=[...r.querySelectorAll('input')];
+    if(ins[0].value.trim()&&ins[2].value.trim()) return true;
+  }
+  return false;
+}
+
+function chk(){
+  const ok=[
+    !!SEL_NAME,
+    SEL_PROJS.length>0,
+    !!document.getElementById('f-progress').value.trim(),
+    hasData(),
+    !!document.getElementById('f-plan').value.trim(),
+  ];
+  const done=ok.filter(Boolean).length;
+  ok.forEach((v,i)=>document.getElementById('ps'+(i+1)).className='prog-step'+(v?' done':''));
+  document.getElementById('prog-label').textContent=`${done} / 5 必填项完成`;
+  document.getElementById('submit-btn').disabled=done<5;
+}
+
+document.getElementById('dt-body').addEventListener('input',chk);
+
+// ── Submit ────────────────────────────────────────────────────
+async function doSubmit(){
+  const dataRows=[];
+  document.querySelectorAll('#dt-body .dt-row').forEach(r=>{
+    const ins=[...r.querySelectorAll('input')].map(i=>i.value.trim());
+    if(ins[0]&&ins[2]) dataRows.push({module:ins[0],metric:ins[1],value:ins[2],note:ins[3]});
+  });
+
+  const entry={
+    id:genId(), name:SEL_NAME, projects:[...SEL_PROJS],
+    progress:document.getElementById('f-progress').value.trim(),
+    dataRows, plan:document.getElementById('f-plan').value.trim(),
+    issue:document.getElementById('f-issue').value.trim(),
+    month:mKey(), date:new Date().toLocaleDateString('zh-CN'),
+    time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})
   };
 
-  // Save name preference
-  localStorage.setItem('hr_last_name', name);
-  if (dept) localStorage.setItem('hr_last_dept', dept);
+  // Remove existing entry by same person this month, then prepend
+  ALL=ALL.filter(e=>!(e.name===SEL_NAME&&e.month===mKey()));
+  ALL.unshift(entry);
 
-  allEntries.unshift(entry);
-  await saveData();
-  showLoading(false);
+  load(true);
+  await pushData();
+  load(false);
 
-  document.getElementById('f-title').value = '';
-  document.getElementById('f-content').value = '';
-  showToast('✓ 提交成功，感谢你的记录！');
-  renderAll();
+  localStorage.setItem('hr_last_name', SEL_NAME);
+
+  // Show success
+  const meta=document.getElementById('s-meta');
+  const rows=[
+    ['提交人', SEL_NAME],
+    ['负责项目', entry.projects.join('、')],
+    ['本月进展', entry.progress.slice(0,100)+(entry.progress.length>100?'…':'')],
+    ['数据记录', dataRows.length+'条'],
+    ['下步规划', entry.plan.slice(0,80)+(entry.plan.length>80?'…':'')],
+  ];
+  if(entry.issue) rows.push(['问题困难', entry.issue.slice(0,80)+(entry.issue.length>80?'…':'')]);
+  meta.innerHTML=rows.map(([l,v])=>`
+    <div class="s-row"><span class="s-label">${l}</span><span class="s-val">${esc(v)}</span></div>`).join('');
+
+  document.getElementById('form-area').style.display='none';
+  document.getElementById('success-card').className='success-card show';
+  window.scrollTo(0,0);
 }
 
-// ── Render ──────────────────────────────────────────────────────
-function renderAll() {
-  const now = getMonthKey();
-  document.getElementById('topbar-month').textContent = getMonthLabel(now);
-  document.getElementById('topbar-badge').textContent = isConfigured ? '多人共享' : '本地模式';
-
-  // Restore last used name
-  const lastN = localStorage.getItem('hr_last_name');
-  const lastD = localStorage.getItem('hr_last_dept');
-  if (lastN && !document.getElementById('f-name').value) {
-    document.getElementById('f-name').value = lastN;
-  }
-  if (lastD) document.getElementById('f-dept').value = lastD;
-
-  renderStats();
-  renderFilters();
-  renderEntries();
+function backToEdit(){
+  document.getElementById('success-card').className='success-card';
+  document.getElementById('form-area').style.display='block';
+  window.scrollTo(0,0);
 }
 
-function renderStats() {
-  const cur = getMonthKey();
-  const month = allEntries.filter(e => e.month === cur);
-  const authors = new Set(month.map(e => e.name)).size;
-  const results = month.filter(e => e.type === 'result').length;
-  const issues  = month.filter(e => e.type === 'issue').length;
-  document.getElementById('stats').innerHTML = `
-    <div class="stat"><div class="stat-n">${month.length}</div><div class="stat-l">本月总记录</div></div>
-    <div class="stat"><div class="stat-n">${authors}</div><div class="stat-l">参与成员</div></div>
-    <div class="stat"><div class="stat-n">${results}</div><div class="stat-l">阶段成果</div></div>
-    <div class="stat"><div class="stat-n">${issues}</div><div class="stat-l">问题风险</div></div>`;
+// ── View pane ─────────────────────────────────────────────────
+function renderView(){
+  const cur=mKey();
+  const month=ALL.filter(e=>e.month===cur);
+  const authors=new Set(month.map(e=>e.name)).size;
+  const withIssue=month.filter(e=>e.issue).length;
+  const submitted=month.length;
+
+  document.getElementById('v-stats').innerHTML=`
+    <div class="stat"><div class="stat-n">${submitted}</div><div class="stat-l">已提交人数</div></div>
+    <div class="stat"><div class="stat-n">${5-authors>0?5-authors:0}</div><div class="stat-l">未提交人数</div></div>
+    <div class="stat"><div class="stat-n">${month.reduce((s,e)=>s+e.dataRows.length,0)}</div><div class="stat-l">数据记录条数</div></div>
+    <div class="stat"><div class="stat-n">${withIssue}</div><div class="stat-l">存在问题困难</div></div>`;
+
+  // Filter bar
+  const names=['all',...new Set(month.map(e=>e.name))];
+  document.getElementById('v-filter').innerHTML=
+    '<span class="filter-label">筛选成员：</span>'+
+    names.map(n=>`<button class="fchip${n===FILTER?' on':''}" onclick="setFilter('${n}')">${n==='all'?'全部':n}</button>`).join('');
+
+  renderEntries(month);
 }
 
-function renderFilters() {
-  const cur = getMonthKey();
-  const month = allEntries.filter(e => e.month === cur);
-  const types = ['all', ...new Set(month.map(e => e.type))];
-  const label = { all:'全部', update:'进展', result:'成果', plan:'计划', issue:'问题', data:'数据' };
-  const cnt = { all: month.length };
-  types.filter(t => t !== 'all').forEach(t => {
-    cnt[t] = month.filter(e => e.type === t).length;
+function setFilter(f){
+  FILTER=f;
+  const cur=mKey();
+  const month=ALL.filter(e=>e.month===cur);
+  document.querySelectorAll('.fchip').forEach(c=>{
+    c.className='fchip'+(c.textContent===(f==='all'?'全部':f)?' on':'');
   });
-  document.getElementById('filter-bar').innerHTML =
-    '<span style="font-size:11px;color:var(--light)">筛选：</span>' +
-    types.map(t =>
-      `<button class="filter-chip${t === filterType ? ' on' : ''}" onclick="setFilter('${t}')">
-        ${label[t] || t} ${cnt[t] || ''}
-      </button>`
-    ).join('');
+  renderEntries(month);
 }
 
-function setFilter(t) { filterType = t; renderFilters(); renderEntries(); }
-
-function renderEntries() {
-  const cur = getMonthKey();
-  let month = allEntries.filter(e => e.month === cur);
-  if (filterType !== 'all') month = month.filter(e => e.type === filterType);
-  const list = document.getElementById('entry-list');
-  if (!month.length) {
-    list.innerHTML = '<div class="empty">本月暂无记录<br>切到「提交记录」开始录入吧</div>';
+function renderEntries(month){
+  const list=FILTER==='all'?month:month.filter(e=>e.name===FILTER);
+  const el=document.getElementById('v-list');
+  if(!list.length){
+    el.innerHTML='<div class="empty">本月暂无提交记录<br>提醒团队成员填写后刷新查看</div>';
     return;
   }
-  list.innerHTML = month.map(e => `
-    <div class="entry-item">
-      <div class="entry-meta">
+  el.innerHTML=list.map(e=>`
+    <div class="entry">
+      <div class="e-meta">
         <div class="avatar">${e.name.slice(0,1)}</div>
-        <span class="entry-author">${e.name}</span>
-        ${e.dept ? `<span class="entry-dept">${e.dept}</span>` : ''}
-        <span class="tag ${TC[e.type] || 'tag-data'}">${TL[e.type] || e.type}</span>
-        <span class="entry-date">${e.date} ${e.time || ''}</span>
+        <span class="e-name">${esc(e.name)}</span>
+        <span class="e-proj">${e.projects.join(' · ')}</span>
+        <span class="e-date">${e.date} ${e.time||''}</span>
       </div>
-      <div class="entry-title">${escHtml(e.title)}</div>
-      ${e.content ? `<div class="entry-content">${escHtml(e.content)}</div>` : ''}
+      <div class="e-section">
+        <div class="e-sec-title">本月进展</div>
+        <div class="e-sec-body">${esc(e.progress)}</div>
+      </div>
+      ${e.dataRows&&e.dataRows.length?`
+      <div class="e-section">
+        <div class="e-sec-title">数据表现</div>
+        <table class="e-data-table">
+          <tr><th>模块</th><th>指标</th><th>数值</th><th>备注</th></tr>
+          ${e.dataRows.map(d=>`<tr><td>${esc(d.module)}</td><td>${esc(d.metric)}</td><td>${esc(d.value)}</td><td>${esc(d.note)}</td></tr>`).join('')}
+        </table>
+      </div>`:''}
+      <div class="e-section">
+        <div class="e-sec-title">下一步规划</div>
+        <div class="e-sec-body">${esc(e.plan)}</div>
+      </div>
+      ${e.issue?`
+      <div class="e-section">
+        <div class="e-sec-title" style="color:#B71C1C">问题与困难</div>
+        <div class="e-sec-body">${esc(e.issue)}</div>
+      </div>`:''}
     </div>`).join('');
 }
-
-// ── Report ──────────────────────────────────────────────────────
-function copyForClaude() {
-  const cur = getMonthKey();
-  const month = allEntries.filter(e => e.month === cur);
-  if (!month.length) { showToast('本月暂无记录'); return; }
-
-  const rtype = document.getElementById('r-type').value;
-  const extra = document.getElementById('r-extra').value.trim();
-  const rtLabel = {
-    monthly:'请基于以下团队记录生成月度例会汇报，结构：核心亮点（3条内）→ 关键数据 → 问题与风险 → 下步行动。',
-    summary:'请基于以下团队记录生成月度工作总结，结构：完成事项 → 核心成果 → 问题与解决方案 → 经验反思。',
-    plan:   '请基于以下团队记录生成下月工作计划，包括：延续推进 → 新增计划 → 时间节点 → 所需支持。',
-    review: '请对以下团队记录中的问题和风险进行复盘，结构：问题梳理 → 根因分析 → 影响评估 → 改善措施。',
-  };
-
-  const lines = month.map(e =>
-    `【${e.name}${e.dept ? '/'+e.dept : ''}】[${TL[e.type]}] ${e.title}${e.content ? '\n' + e.content : ''}`
-  ).join('\n\n');
-
-  const text = `${rtLabel[rtype]}\n${extra ? '\n特别要求：' + extra + '\n' : ''}
-【月份】${getMonthLabel(cur)}
-
-【团队本月记录】
-${lines}`;
-
-  navigator.clipboard.writeText(text).then(() => {
-    showToast('✓ 已复制！请粘贴到 Claude 对话中发送');
-  }).catch(() => {
-    document.getElementById('ai-out').textContent = text;
-    document.getElementById('ai-out').className = 'ai-out';
-    showToast('已显示在下方，请手动复制');
-  });
-}
-
-async function genReportAI() {
-  if (!CONFIG.ANTHROPIC_KEY) {
-    showToast('未配置 Anthropic API Key，请使用「复制数据 → 去 Claude 生成」');
-    return;
-  }
-  const cur = getMonthKey();
-  const month = allEntries.filter(e => e.month === cur);
-  if (!month.length) { showToast('本月暂无记录'); return; }
-
-  const out = document.getElementById('ai-out');
-  out.className = 'ai-out ai-hint';
-  out.textContent = 'AI 正在整理内容，请稍候...';
-
-  const rtype = document.getElementById('r-type').value;
-  const extra = document.getElementById('r-extra').value.trim();
-  const lines = month.map(e =>
-    `[${e.name}${e.dept?'/'+e.dept:''}][${TL[e.type]}] ${e.title}\n${e.content||''}`
-  ).join('\n\n');
-
-  const inst = {
-    monthly:'生成月度例会汇报，结构：核心亮点（3条内）→ 关键数据 → 问题与风险 → 下步行动。',
-    summary:'生成月度工作总结，结构：完成事项 → 核心成果 → 问题与解决方案 → 经验反思。',
-    plan:   '生成下月工作计划：延续推进 → 新增计划 → 时间节点 → 所需支持资源。',
-    review: '复盘问题和风险：问题梳理 → 根因分析 → 影响评估 → 改善措施。',
-  };
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': CONFIG.ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514', max_tokens: 1000,
-        system: '你是 HR 数字化产品总监助理，擅长将团队进展整理成清晰有逻辑的汇报材料。风格简练专业，重要数字加粗，按部门或主题归类。',
-        messages: [{ role: 'user', content: `${inst[rtype]}\n\n【月份】${getMonthLabel(cur)}\n${extra?'【特别要求】'+extra+'\n':''}\n【团队记录】\n${lines}` }]
-      })
-    });
-    const data = await resp.json();
-    const text = (data.content||[]).filter(b => b.type==='text').map(b => b.text).join('');
-    out.className = 'ai-out';
-    out.textContent = text || '生成失败，请重试。';
-  } catch(e) {
-    out.className = 'ai-out';
-    out.textContent = '请求失败：' + e.message;
-  }
-}
-
-function copyResult() {
-  const text = document.getElementById('ai-out').textContent;
-  navigator.clipboard.writeText(text).then(() => showToast('✓ 已复制'));
-}
-
-// ── Utils ────────────────────────────────────────────────────────
-function sw(t) {
-  ['submit','view','report'].forEach(p => {
-    document.getElementById('pane-'+p).style.display = p===t ? '' : 'none';
-  });
-  document.querySelectorAll('.tab').forEach((b,i) => {
-    b.className = 'tab' + (['submit','view','report'][i]===t?' on':'');
-  });
-  if (t === 'view' || t === 'report') { renderStats(); renderFilters(); renderEntries(); }
-  if (t === 'view') loadData();
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.style.display = 'block';
-  setTimeout(() => t.style.display='none', 2800);
-}
-
-function showLoading(v) {
-  document.getElementById('loading').className = 'loading-mask' + (v?' show':'');
-}
-
-function highlight(id) {
-  document.getElementById(id).style.borderColor = 'var(--orange)';
-  document.getElementById(id).focus();
-}
-function resetHighlight(id) {
-  document.getElementById(id).style.borderColor = '';
-}
-
-function escHtml(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// ── Init ────────────────────────────────────────────────────────
-loadData();
 </script>
 </body>
 </html>
