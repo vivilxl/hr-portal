@@ -3,21 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HR 工作台 · 月度工作汇报</title>
+<title>HR 工作台 · 团队协作空间</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-
 :root{
   --orange:#E87722;--orange-l:#FEF0E4;--orange-d:#B85010;
   --dark:#1A1A1A;--mid:#555;--light:#999;
-  --border:#E4E4E4;--bg:#F5F5F5;--white:#FFFFFF;
-  --panel:#F8F8F8;
+  --border:#E4E4E4;--bg:#F5F5F5;--white:#FFFFFF;--panel:#F8F8F8;
   --green:#2E7D32;--green-l:#EBF5EB;
   --red:#B71C1C;--red-l:#FDECEA;
   --blue:#1565C0;--blue-l:#E3F2FD;
+  --amber:#E65100;--amber-l:#FFF3E0;
+  --purple:#6A1B9A;--purple-l:#F3E5F5;
   --radius:10px;--radius-sm:7px;
 }
-
 body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--dark);font-size:14px;min-height:100vh}
 
 /* ── Topbar ── */
@@ -26,13 +25,19 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
 .topbar h1{font-size:14px;font-weight:500;color:#fff;flex:1}
 .topbar-badge{font-size:12px;padding:4px 12px;background:rgba(232,119,34,.2);color:var(--orange);border-radius:20px;font-weight:500}
 
-/* ── Nav tabs ── */
-.nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;padding:0 24px;gap:0}
-.nav-tab{padding:14px 20px;font-size:14px;cursor:pointer;border-bottom:2px solid transparent;color:var(--light);transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit}
+/* ── Nav ── */
+.nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;padding:0 20px;overflow-x:auto}
+.nav-tab{padding:14px 18px;font-size:14px;cursor:pointer;border-bottom:2px solid transparent;color:var(--light);transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;white-space:nowrap}
 .nav-tab:hover{color:var(--dark)}
 .nav-tab.on{color:var(--orange);border-bottom-color:var(--orange);font-weight:500}
 
-.container{max-width:760px;margin:0 auto;padding:20px 16px}
+.container{max-width:780px;margin:0 auto;padding:20px 16px}
+
+/* ── Sub nav (inside 月度汇报) ── */
+.sub-nav{display:flex;gap:4px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:4px;margin-bottom:16px}
+.sub-btn{flex:1;padding:9px;border:none;background:transparent;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;font-family:inherit;color:var(--mid);transition:all .15s}
+.sub-btn.on{background:var(--dark);color:#fff;font-weight:500}
+.sub-btn:not(.on):hover{background:var(--panel)}
 
 /* ── Goal card ── */
 .goal-card{background:var(--dark);border-radius:var(--radius);padding:22px;margin-bottom:16px;position:relative;overflow:hidden}
@@ -43,10 +48,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
 .goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .goal-item{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);padding:13px 15px;display:flex;align-items:flex-start;gap:11px}
 .gi-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
-.gi-o{background:rgba(232,119,34,.2)}
-.gi-b{background:rgba(33,150,243,.15)}
-.gi-g{background:rgba(46,125,50,.2)}
-.gi-p{background:rgba(123,31,162,.2)}
+.gi-o{background:rgba(232,119,34,.2)}.gi-b{background:rgba(33,150,243,.15)}.gi-g{background:rgba(46,125,50,.2)}.gi-p{background:rgba(123,31,162,.2)}
 .gi-title{font-size:13px;font-weight:500;color:#fff;margin-bottom:3px}
 .gi-desc{font-size:12px;color:rgba(255,255,255,.45);line-height:1.6}
 
@@ -56,7 +58,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
 .prog-step.done{background:var(--orange)}
 .prog-label{font-size:12px;color:var(--light);white-space:nowrap}
 
-/* ── Section card ── */
+/* ── Section ── */
 .section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
 .sec-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
 .sec-num{width:26px;height:26px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -66,25 +68,27 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
 .badge-opt{font-size:12px;color:var(--light);background:var(--panel);padding:3px 10px;border-radius:10px}
 .sec-body{padding:16px 18px}
 
-/* ── Name chips ── */
+/* ── Form elements ── */
 .name-grid{display:flex;gap:10px;flex-wrap:wrap}
 .name-chip{padding:10px 24px;border-radius:24px;border:1px solid var(--border);background:transparent;color:var(--mid);font-size:14px;cursor:pointer;font-family:inherit;transition:all .15s}
 .name-chip:hover{border-color:var(--orange);color:var(--orange)}
 .name-chip.sel{background:var(--orange);color:#fff;border-color:var(--orange);font-weight:500}
 
-/* ── Project cards ── */
 .proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .proj-card{padding:14px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;cursor:pointer;text-align:left;font-family:inherit;transition:all .15s}
-.proj-card:hover{border-color:var(--orange);background:var(--orange-l)}
-.proj-card.sel{border-color:var(--orange);background:var(--orange-l)}
+.proj-card:hover,.proj-card.sel{border-color:var(--orange);background:var(--orange-l)}
 .proj-card .pn{font-size:14px;font-weight:500;color:var(--dark);display:block;margin-bottom:4px}
 .proj-card .pd{font-size:12px;color:var(--light);line-height:1.55}
-.proj-card.sel .pn{color:var(--orange-d)}
-.proj-card.sel .pd{color:#C07030}
+.proj-card.sel .pn{color:var(--orange-d)}.proj-card.sel .pd{color:#C07030}
 
-/* ── Textarea ── */
+input[type=text],input[type=date],select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--white);color:var(--dark);font-family:inherit;outline:none;transition:border-color .15s}
+input[type=text]:focus,input[type=date]:focus,select:focus{border-color:var(--orange)}
 textarea{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--white);color:var(--dark);font-family:inherit;outline:none;resize:vertical;line-height:1.8;transition:border-color .15s}
 textarea:focus{border-color:var(--orange)}
+.flabel{font-size:12px;color:var(--mid);font-weight:500;margin-bottom:6px;display:block}
+.fgroup{margin-bottom:14px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
 .hint{font-size:12px;color:var(--mid);margin-top:8px;padding:11px 14px;background:var(--panel);border-radius:var(--radius-sm);border-left:3px solid var(--border);line-height:1.8}
 
 /* ── Data table ── */
@@ -94,44 +98,39 @@ textarea:focus{border-color:var(--orange)}
 .dt-row{display:grid;grid-template-columns:26% 21% 17% 1fr 34px;border-bottom:1px solid var(--border)}
 .dt-row:last-child{border-bottom:none}
 .dt-row input{width:100%;padding:11px 10px;border:none;border-right:1px solid var(--border);font-size:13px;background:transparent;color:var(--dark);font-family:inherit;outline:none}
-.dt-row input:last-of-type{border-right:none}
 .dt-row input:focus{background:#FFFBF8}
 .del-btn{border:none;background:transparent;color:var(--light);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:color .15s;padding:0}
 .del-btn:hover{color:var(--red)}
 .add-row-btn{width:100%;padding:11px;border:none;border-top:1px dashed var(--border);background:transparent;color:var(--light);font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s}
 .add-row-btn:hover{background:var(--panel);color:var(--orange)}
 
-/* ── Submit button ── */
-.btn-submit{width:100%;padding:14px;background:var(--orange);color:#fff;border:none;border-radius:var(--radius);font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;transition:background .15s;margin-top:4px}
-.btn-submit:hover{background:var(--orange-d)}
-.btn-submit:disabled{background:var(--border);color:var(--light);cursor:not-allowed}
+/* ── Buttons ── */
+.btn{padding:9px 18px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--dark);font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn:hover{background:var(--panel)}
+.btn-primary{background:var(--orange);color:#fff;border-color:var(--orange)}
+.btn-primary:hover{background:var(--orange-d)}
+.btn-primary:disabled{background:var(--border);color:var(--light);cursor:not-allowed}
+.btn-outline{border-color:var(--orange);color:var(--orange)}
+.btn-outline:hover{background:var(--orange-l)}
+.btn-danger{border-color:var(--red);color:var(--red)}
+.btn-danger:hover{background:var(--red-l)}
+.btn-block{width:100%;padding:13px;font-size:14px;font-weight:500;border-radius:var(--radius)}
+.btn-sm{padding:5px 12px;font-size:12px}
 
-/* ── Success card ── */
-.success-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px 24px;text-align:center;display:none}
-.success-card.show{display:block}
-.s-icon{width:56px;height:56px;border-radius:50%;background:var(--green-l);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;color:var(--green)}
-.s-title{font-size:17px;font-weight:500;margin-bottom:6px}
-.s-sub{font-size:13px;color:var(--light);margin-bottom:22px;line-height:1.8}
-.s-meta{background:var(--panel);border-radius:var(--radius-sm);padding:14px 16px;text-align:left;margin-bottom:20px}
-.s-row{display:flex;gap:10px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);line-height:1.6}
-.s-row:last-child{border-bottom:none}
-.s-label{color:var(--light);width:72px;flex-shrink:0;font-size:12px;padding-top:1px}
-.s-val{color:var(--dark);flex:1;word-break:break-word}
-.btn-edit{width:100%;padding:13px;background:transparent;color:var(--orange);border:1.5px solid var(--orange);border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s}
-.btn-edit:hover{background:var(--orange-l)}
-
-/* ── View tab ── */
+/* ── Stats ── */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
 .stat{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center}
 .stat-n{font-size:26px;font-weight:600;color:var(--orange);line-height:1.1}
 .stat-l{font-size:12px;color:var(--light);margin-top:4px}
 
+/* ── Filter bar ── */
 .filter-bar{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .filter-label{font-size:12px;color:var(--light)}
 .fchip{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--mid);font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s}
 .fchip:hover{border-color:var(--orange);color:var(--orange)}
 .fchip.on{background:var(--orange-l);color:var(--orange-d);border-color:var(--orange);font-weight:500}
 
+/* ── Entry cards ── */
 .entries{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 .entry{padding:16px 18px;border-bottom:1px solid var(--border)}
 .entry:last-child{border-bottom:none}
@@ -147,35 +146,105 @@ textarea:focus{border-color:var(--orange)}
 .e-data-table th{text-align:left;padding:5px 8px;background:var(--panel);color:var(--light);font-weight:500;border-bottom:1px solid var(--border)}
 .e-data-table td{padding:6px 8px;border-bottom:1px solid var(--border);color:var(--mid)}
 .e-data-table tr:last-child td{border-bottom:none}
+
+/* ── Task module ── */
+.task-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;transition:box-shadow .15s}
+.task-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.task-card.overdue{border-left:3px solid var(--red)}
+.task-card.due-soon{border-left:3px solid var(--amber)}
+.task-card.done-card{border-left:3px solid var(--green);opacity:.75}
+.task-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.task-title{font-size:14px;font-weight:500;flex:1;line-height:1.4}
+.task-title.done-text{text-decoration:line-through;color:var(--light)}
+.task-desc{font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:10px;white-space:pre-wrap;word-break:break-word}
+.task-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--light);margin-bottom:8px}
+.pri-badge{font-size:11px;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+.pri-high{background:var(--red-l);color:var(--red)}
+.pri-mid{background:var(--amber-l);color:var(--amber)}
+.pri-low{background:var(--panel);color:var(--light)}
+.assignee-tag{padding:3px 10px;border-radius:10px;background:var(--orange-l);color:var(--orange-d);font-size:12px;font-weight:500}
+.deadline-tag{padding:3px 10px;border-radius:10px;font-size:12px;font-weight:500}
+.dl-ok{background:var(--green-l);color:var(--green)}
+.dl-soon{background:var(--amber-l);color:var(--amber)}
+.dl-over{background:var(--red-l);color:var(--red)}
+.dl-done{background:var(--panel);color:var(--light)}
+.task-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.feedback-area{background:var(--panel);border-radius:var(--radius-sm);padding:14px;margin-top:10px;border:1px solid var(--border)}
+.feedback-title{font-size:12px;font-weight:600;color:var(--mid);margin-bottom:10px}
+.feedback-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.6}
+.feedback-item:last-child{border-bottom:none}
+.fb-name{font-weight:500;color:var(--dark);margin-right:6px}
+.fb-text{color:var(--mid)}
+.fb-data{font-size:12px;color:var(--blue);margin-top:3px}
+.fb-file{font-size:12px;color:var(--blue);margin-top:3px}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}
+.dot-done{background:var(--green)}.dot-prog{background:var(--amber)}
+.file-preview{margin-top:6px;display:flex;flex-wrap:wrap;gap:6px}
+.file-chip{padding:4px 10px;background:var(--blue-l);color:var(--blue);border-radius:6px;font-size:12px;display:flex;align-items:center;gap:5px}
+.file-chip .rm{cursor:pointer;font-size:14px;color:var(--light)}.file-chip .rm:hover{color:var(--red)}
+
+/* ── Leader feedback module ── */
+.lf-month-selector{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.lf-month-selector select{width:auto;min-width:140px}
+.lf-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
+.lf-card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.lf-month-tag{font-size:12px;padding:3px 12px;background:var(--purple-l);color:var(--purple);border-radius:20px;font-weight:500}
+.lf-rating{display:flex;gap:6px;margin-bottom:10px}
+.rating-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s}
+.rating-btn:hover{border-color:var(--orange)}
+.rating-btn.sel-good{background:var(--green-l);color:var(--green);border-color:var(--green);font-weight:500}
+.rating-btn.sel-mid{background:var(--amber-l);color:var(--amber);border-color:var(--amber);font-weight:500}
+.rating-btn.sel-bad{background:var(--red-l);color:var(--red);border-color:var(--red);font-weight:500}
+
+.lf-history-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px}
+.lf-hc-head{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.lf-hc-body{padding:14px 18px}
+.lf-hc-section{margin-bottom:12px}
+.lf-hc-section:last-child{margin-bottom:0}
+.lf-hc-label{font-size:11px;font-weight:600;color:var(--light);margin-bottom:5px;letter-spacing:.5px}
+.lf-hc-text{font-size:13px;color:var(--mid);line-height:1.75;white-space:pre-wrap;word-break:break-word}
+.rating-badge{font-size:11px;padding:3px 10px;border-radius:10px;font-weight:500}
+.rb-good{background:var(--green-l);color:var(--green)}
+.rb-mid{background:var(--amber-l);color:var(--amber)}
+.rb-bad{background:var(--red-l);color:var(--red)}
+
+/* ── Modal ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;padding:16px}
+.modal-bg.show{display:flex}
+.modal{background:var(--white);border-radius:var(--radius);width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:500}
+.modal-close{border:none;background:transparent;font-size:20px;cursor:pointer;color:var(--light);line-height:1;padding:0}
+.modal-body{padding:20px}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+
+/* ── Success card ── */
+.success-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px 24px;text-align:center;display:none}
+.success-card.show{display:block}
+.s-icon{width:56px;height:56px;border-radius:50%;background:var(--green-l);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;color:var(--green)}
+.s-title{font-size:17px;font-weight:500;margin-bottom:6px}
+.s-sub{font-size:13px;color:var(--light);margin-bottom:22px;line-height:1.8}
+.s-meta{background:var(--panel);border-radius:var(--radius-sm);padding:14px 16px;text-align:left;margin-bottom:20px}
+.s-row{display:flex;gap:10px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);line-height:1.6}
+.s-row:last-child{border-bottom:none}
+.s-label{color:var(--light);width:72px;flex-shrink:0;font-size:12px;padding-top:1px}
+.s-val{color:var(--dark);flex:1;word-break:break-word}
+
 .empty{padding:48px;text-align:center;color:var(--light);font-size:13px;line-height:2}
-
-/* ── Config warning ── */
-.cfg-warn{background:#FFF3E0;border:1px solid #FFCC80;border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;font-size:13px;color:#E65100;line-height:1.75}
-.cfg-warn strong{font-weight:600}
-
-/* ── Loading ── */
-.loading{display:none;position:fixed;inset:0;background:rgba(255,255,255,.8);align-items:center;justify-content:center;z-index:200;font-size:14px;color:var(--mid)}
+.cfg-warn{background:var(--amber-l);border:1px solid #FFCC80;border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;font-size:13px;color:var(--amber);line-height:1.75}
+.loading{display:none;position:fixed;inset:0;background:rgba(255,255,255,.8);align-items:center;justify-content:center;z-index:300;font-size:14px;color:var(--mid)}
 .loading.show{display:flex}
-
-/* ── Toast ── */
-.toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;background:var(--dark);color:#fff;border-radius:var(--radius);font-size:13px;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;background:var(--dark);color:#fff;border-radius:var(--radius);font-size:13px;z-index:400;box-shadow:0 4px 20px rgba(0,0,0,.2);white-space:nowrap}
 
 @media(max-width:600px){
-  .proj-grid,.goal-grid{grid-template-columns:1fr}
+  .proj-grid,.goal-grid,.frow{grid-template-columns:1fr}
   .stats{grid-template-columns:repeat(2,1fr)}
-  .dt-head,.dt-row{grid-template-columns:25% 20% 18% 1fr 30px}
-  .nav-tab{padding:12px 14px;font-size:13px}
+  .nav-tab{padding:12px 12px;font-size:13px}
 }
 </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════════════════════
-  ★ 配置区：填入 JSONBin 信息，完成后删掉这段注释
-  1. 注册 jsonbin.io → 获取 Master Key
-  2. 创建 Bin（内容填 {"entries":[]})→ 复制 Bin ID
-  3. 将下方两个值替换后重新上传到 GitHub
-════════════════════════════════════════════════════════════ -->
 <script>
 const CONFIG = {
   BIN_ID:  '69c10e98c3097a1dd54f3f00',
@@ -185,457 +254,578 @@ const CONFIG = {
 
 <div class="topbar">
   <div class="topbar-dot"></div>
-  <h1>HR 工作台  ·  月度工作汇报</h1>
+  <h1>HR 工作台  ·  团队协作空间</h1>
   <span class="topbar-badge" id="topbar-badge">加载中</span>
 </div>
 
 <div class="nav">
-  <button class="nav-tab on" onclick="sw('submit')">📝  提交记录</button>
-  <button class="nav-tab" onclick="sw('view')">📋  查看全部</button>
+  <button class="nav-tab on" onclick="sw('task')">📌  任务管理</button>
+  <button class="nav-tab" onclick="sw('report')">📊  月度汇报</button>
+  <button class="nav-tab" onclick="sw('leader')">💬  领导反馈</button>
 </div>
 
 <div class="container">
   <div id="cfg-warn" class="cfg-warn" style="display:none">
-    <strong>⚠ 尚未配置数据库</strong>：数据目前仅存在本地浏览器，无法跨人共享。<br>
-    请打开 index.html，在顶部填入 JSONBin 的 BIN_ID 和 API_KEY，然后重新上传到 GitHub。
+    <strong>⚠ 尚未配置数据库</strong>：请填入 JSONBin 的 BIN_ID 和 API_KEY 后重新上传到 GitHub。
   </div>
 
-  <!-- ════ SUBMIT PANE ════ -->
-  <div id="pane-submit">
+  <!-- ══════════════════════════════════════════
+       PANE 1：月度汇报（提交 + 查看合并）
+  ══════════════════════════════════════════ -->
+  <div id="pane-report" style="display:none">
+    <div class="sub-nav">
+      <button class="sub-btn on" id="sub-submit" onclick="reportSw('submit')">📝  提交记录</button>
+      <button class="sub-btn"    id="sub-view"   onclick="reportSw('view')">📋  查看汇总</button>
+    </div>
 
-    <!-- 年度目标 -->
-    <div class="goal-card">
-      <div class="goal-label">2026 年度目标</div>
-      <div class="goal-headline">打造拳头产品 · 用数据说话 · 以用促建 · 夯实底层能力</div>
-      <div class="goal-grid">
-        <div class="goal-item">
-          <div class="gi-icon gi-o">🏆</div>
-          <div>
-            <div class="gi-title">3 大拳头产品</div>
-            <div class="gi-desc">HR 工作台 · AI 小助手 · 员工数据库，打造标杆体验</div>
+    <!-- 提交记录 -->
+    <div id="rpane-submit">
+      <div class="goal-card">
+        <div class="goal-label">2026 年度目标</div>
+        <div class="goal-headline">打造拳头产品 · 用数据说话 · 以用促建 · 夯实底层能力</div>
+        <div class="goal-grid">
+          <div class="goal-item"><div class="gi-icon gi-o">🏆</div><div><div class="gi-title">3 大拳头产品</div><div class="gi-desc">HR 工作台 · AI 小助手 · 员工数据库</div></div></div>
+          <div class="goal-item"><div class="gi-icon gi-b">🎯</div><div><div class="gi-title">座谈会 + 报表大赛</div><div class="gi-desc">上半年召开座谈会，举办数据报表大赛</div></div></div>
+          <div class="goal-item"><div class="gi-icon gi-g">🤖</div><div><div class="gi-title">持续优化 AI 小助手</div><div class="gi-desc">提升准确性，以用促建推动数据治理</div></div></div>
+          <div class="goal-item"><div class="gi-icon gi-p">🔧</div><div><div class="gi-title">搭建底层通用能力</div><div class="gi-desc">意见反馈 · 数据看板 · 通用组件</div></div></div>
+        </div>
+      </div>
+
+      <div id="form-area">
+        <div class="progress">
+          <div class="prog-step" id="ps1"></div><div class="prog-step" id="ps2"></div>
+          <div class="prog-step" id="ps3"></div><div class="prog-step" id="ps4"></div>
+          <div class="prog-step" id="ps5"></div>
+          <span class="prog-label" id="prog-label">0 / 5 必填项完成</span>
+        </div>
+
+        <div class="section">
+          <div class="sec-head"><div class="sec-num">1</div><span class="sec-title">你是谁？</span><span class="badge-req">必填</span></div>
+          <div class="sec-body">
+            <div class="name-grid">
+              <button class="name-chip" onclick="selName('杰哥')">杰哥</button>
+              <button class="name-chip" onclick="selName('凯弟')">凯弟</button>
+              <button class="name-chip" onclick="selName('玉汝')">玉汝</button>
+              <button class="name-chip" onclick="selName('康妹')">康妹</button>
+              <button class="name-chip" onclick="selName('大林')">大林</button>
+            </div>
           </div>
         </div>
-        <div class="goal-item">
-          <div class="gi-icon gi-b">🎯</div>
-          <div>
-            <div class="gi-title">座谈会 + 报表大赛</div>
-            <div class="gi-desc">上半年召开成员公司座谈会，举办数据报表大赛，以用促建</div>
+
+        <div class="section">
+          <div class="sec-head"><div class="sec-num">2</div><span class="sec-title">负责的项目</span><span class="badge-req">必填，可多选</span></div>
+          <div class="sec-body">
+            <div class="proj-grid">
+              <button class="proj-card" data-v="员工数据库" onclick="toggleProj(this)"><span class="pn">员工数据库</span><span class="pd">Golden Record · 数据治理 · 主数据标准</span></button>
+              <button class="proj-card" data-v="AI小助手+报表" onclick="toggleProj(this)"><span class="pn">AI 小助手 + 报表</span><span class="pd">问一问 · 智能分析 · 数据报表自动化</span></button>
+              <button class="proj-card" data-v="HR工作台" onclick="toggleProj(this)"><span class="pn">HR 工作台</span><span class="pd">APP 端 · 合同 · 干部任免 · 考勤</span></button>
+              <button class="proj-card" data-v="运营" onclick="toggleProj(this)"><span class="pn">运营</span><span class="pd">成员公司推广 · 用户激活 · 座谈会 / 大赛</span></button>
+            </div>
           </div>
         </div>
-        <div class="goal-item">
-          <div class="gi-icon gi-g">🤖</div>
-          <div>
-            <div class="gi-title">持续优化 AI 小助手</div>
-            <div class="gi-desc">提升回答准确性，以使用驱动数据治理和质量提升</div>
+
+        <div class="section">
+          <div class="sec-head"><div class="sec-num">3</div><span class="sec-title">本月工作进展总结</span><span class="badge-req">必填</span></div>
+          <div class="sec-body">
+            <textarea id="f-progress" rows="5" placeholder="本月完成了哪些事项？按条列举即可，不用整理格式。" oninput="chk()"></textarea>
+            <div class="hint">📌 示例：· 完成 HR 工作台移动端适配  · 推进 3 家成员公司接入  · AI 小助手准确率提升至 81%</div>
           </div>
         </div>
-        <div class="goal-item">
-          <div class="gi-icon gi-p">🔧</div>
-          <div>
-            <div class="gi-title">搭建底层通用能力</div>
-            <div class="gi-desc">意见反馈 · 数据看板 · 通用组件，支撑各场景复用</div>
+
+        <div class="section">
+          <div class="sec-head"><div class="sec-num">4</div><span class="sec-title">上月上线模块的数据表现</span><span class="badge-req">必填</span></div>
+          <div class="sec-body">
+            <div class="dt-wrap">
+              <div class="dt-head"><span>模块 / 功能</span><span>关键指标</span><span>数值</span><span>备注说明</span><span></span></div>
+              <div id="dt-body">
+                <div class="dt-row"><input type="text" placeholder="如：合同续签"><input type="text" placeholder="如：月活用户"><input type="text" placeholder="如：1,240人"><input type="text" placeholder="如：环比+336%"><button class="del-btn" onclick="delRow(this)">×</button></div>
+                <div class="dt-row"><input type="text" placeholder="如：AI小助手"><input type="text" placeholder="如：月咨询次数"><input type="text" placeholder="如：25,500次"><input type="text" placeholder="如：制度咨询占73%"><button class="del-btn" onclick="delRow(this)">×</button></div>
+              </div>
+              <button class="add-row-btn" onclick="addRow()">＋ 添加一行数据</button>
+            </div>
           </div>
+        </div>
+
+        <div class="section">
+          <div class="sec-head"><div class="sec-num">5</div><span class="sec-title">下一步规划动作</span><span class="badge-req">必填</span></div>
+          <div class="sec-body">
+            <textarea id="f-plan" rows="5" placeholder="下个月打算做什么？尽量写清楚时间节点和目标。" oninput="chk()"></textarea>
+            <div class="hint">📌 示例：· 4月完成干部任免 APP 端适配  · Q2 推进 5 家成员公司接入  · 月底完成报表大赛方案设计</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="sec-head"><div class="sec-num g">6</div><span class="sec-title">存在的问题和困难</span><span class="badge-opt">选填</span></div>
+          <div class="sec-body">
+            <textarea id="f-issue" rows="4" placeholder="遇到了什么卡点？需要什么支持？没有可以不填。"></textarea>
+            <div class="hint">📌 示例：· 接口对接进度滞后  · 缺乏激励机制  · 需要领导协调 IT 资源</div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="submit-btn" onclick="doSubmit()" disabled>提交本月汇报</button>
+      </div>
+
+      <div class="success-card" id="success-card">
+        <div class="s-icon">✓</div>
+        <div class="s-title">提交成功</div>
+        <div class="s-sub">你的月度汇报已保存<br>点「查看汇总」可查看所有人的记录</div>
+        <div class="s-meta" id="s-meta"></div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="btn btn-outline btn-block" onclick="backToEdit()">✏️  修改并重新提交</button>
+          <button class="btn btn-primary btn-block" onclick="reportSw('view')">📋  查看汇总</button>
         </div>
       </div>
     </div>
 
-    <!-- 表单 -->
-    <div id="form-area">
-      <div class="progress">
-        <div class="prog-step" id="ps1"></div>
-        <div class="prog-step" id="ps2"></div>
-        <div class="prog-step" id="ps3"></div>
-        <div class="prog-step" id="ps4"></div>
-        <div class="prog-step" id="ps5"></div>
-        <span class="prog-label" id="prog-label">0 / 5 必填项完成</span>
-      </div>
-
-      <div class="section">
-        <div class="sec-head"><div class="sec-num">1</div><span class="sec-title">你是谁？</span><span class="badge-req">必填</span></div>
-        <div class="sec-body">
-          <div class="name-grid">
-            <button class="name-chip" onclick="selName('杰哥')">杰哥</button>
-            <button class="name-chip" onclick="selName('凯弟')">凯弟</button>
-            <button class="name-chip" onclick="selName('玉汝')">玉汝</button>
-            <button class="name-chip" onclick="selName('康妹')">康妹</button>
-            <button class="name-chip" onclick="selName('大林')">大林</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="sec-head"><div class="sec-num">2</div><span class="sec-title">负责的项目</span><span class="badge-req">必填，可多选</span></div>
-        <div class="sec-body">
-          <div class="proj-grid">
-            <button class="proj-card" data-v="员工数据库" onclick="toggleProj(this)">
-              <span class="pn">员工数据库</span>
-              <span class="pd">Golden Record · 数据治理 · 主数据标准</span>
-            </button>
-            <button class="proj-card" data-v="AI小助手+报表" onclick="toggleProj(this)">
-              <span class="pn">AI 小助手 + 报表</span>
-              <span class="pd">问一问 · 智能分析 · 数据报表自动化</span>
-            </button>
-            <button class="proj-card" data-v="HR工作台" onclick="toggleProj(this)">
-              <span class="pn">HR 工作台</span>
-              <span class="pd">APP 端 · 合同 · 干部任免 · 考勤</span>
-            </button>
-            <button class="proj-card" data-v="运营" onclick="toggleProj(this)">
-              <span class="pn">运营</span>
-              <span class="pd">成员公司推广 · 用户激活 · 座谈会 / 大赛</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="sec-head"><div class="sec-num">3</div><span class="sec-title">本月工作进展总结</span><span class="badge-req">必填</span></div>
-        <div class="sec-body">
-          <textarea id="f-progress" rows="5" placeholder="本月完成了哪些事项？按条列举即可，不用整理格式。" oninput="chk()"></textarea>
-          <div class="hint">
-            📌 填写示例<br>
-            · 完成 HR 工作台移动端合同模块适配，已通过测试，预计下周上线<br>
-            · 推进 3 家种子成员公司接入，平安证券本月完成上线<br>
-            · AI 小助手新增 50 条制度问答，准确率从 72% 提升至 81%
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="sec-head"><div class="sec-num">4</div><span class="sec-title">上月上线模块的数据表现</span><span class="badge-req">必填</span></div>
-        <div class="sec-body">
-          <div class="dt-wrap">
-            <div class="dt-head">
-              <span>模块 / 功能名称</span><span>关键指标</span><span>数值</span><span>备注说明</span><span></span>
-            </div>
-            <div id="dt-body">
-              <div class="dt-row">
-                <input type="text" placeholder="如：合同续签功能">
-                <input type="text" placeholder="如：月活用户">
-                <input type="text" placeholder="如：1,240人">
-                <input type="text" placeholder="如：环比+336%">
-                <button class="del-btn" onclick="delRow(this)">×</button>
-              </div>
-              <div class="dt-row">
-                <input type="text" placeholder="如：AI小助手问一问">
-                <input type="text" placeholder="如：月咨询次数">
-                <input type="text" placeholder="如：25,500次">
-                <input type="text" placeholder="如：制度咨询占73%">
-                <button class="del-btn" onclick="delRow(this)">×</button>
-              </div>
-            </div>
-            <button class="add-row-btn" onclick="addRow()">＋ 添加一行数据</button>
-          </div>
-          <div class="hint" style="margin-top:8px">
-            📌 填写示例：HR 工作台 · 月活用户 · 285人 · 仅 PC 端，移动端适配后预计大幅提升
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="sec-head"><div class="sec-num">5</div><span class="sec-title">下一步规划动作</span><span class="badge-req">必填</span></div>
-        <div class="sec-body">
-          <textarea id="f-plan" rows="5" placeholder="下个月或下一阶段打算做什么？尽量写清楚时间节点和目标。" oninput="chk()"></textarea>
-          <div class="hint">
-            📌 填写示例<br>
-            · 4月完成干部任免 APP 端适配，覆盖 B 级干部审批流程<br>
-            · Q2 推进 5 家成员公司接入，重点跟进平安银行和平安人寿<br>
-            · 月底前完成报表大赛方案设计，提交领导审批
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="sec-head"><div class="sec-num g">6</div><span class="sec-title">存在的问题和困难</span><span class="badge-opt">选填</span></div>
-        <div class="sec-body">
-          <textarea id="f-issue" rows="4" placeholder="遇到了什么卡点？需要什么资源或支持？没有可以不填。"></textarea>
-          <div class="hint">
-            📌 填写示例<br>
-            · 干部管理部接口对接进度滞后，影响 Q2 上线，需协调推进<br>
-            · 成员公司推广缺乏激励机制，建议与 HRD 考核挂钩<br>
-            · 底层数据看板组件开发排期未确认，请领导协助协调 IT 资源
-          </div>
-        </div>
-      </div>
-
-      <button class="btn-submit" id="submit-btn" onclick="doSubmit()" disabled>提交本月汇报</button>
-    </div>
-
-    <!-- 提交成功态 -->
-    <div class="success-card" id="success-card">
-      <div class="s-icon">✓</div>
-      <div class="s-title">提交成功</div>
-      <div class="s-sub">你的月度汇报已保存<br>负责人可在「查看全部」查看，月底统一生成汇报材料</div>
-      <div class="s-meta" id="s-meta"></div>
-      <button class="btn-edit" onclick="backToEdit()">✏️  修改内容并重新提交</button>
+    <!-- 查看汇总 -->
+    <div id="rpane-view" style="display:none">
+      <div class="stats" id="v-stats"></div>
+      <div class="filter-bar" id="v-filter"></div>
+      <div class="entries" id="v-list"></div>
     </div>
   </div>
 
-  <!-- ════ VIEW PANE ════ -->
-  <div id="pane-view" style="display:none">
-    <div class="stats" id="v-stats"></div>
-    <div class="filter-bar" id="v-filter"></div>
-    <div class="entries" id="v-list"></div>
+  <!-- ══════════════════════════════════════════
+       PANE 2：任务管理
+  ══════════════════════════════════════════ -->
+  <div id="pane-task">
+    <div class="sub-nav">
+      <button class="sub-btn on" id="tnav-my"     onclick="taskSw('my')">👤  我的任务</button>
+      <button class="sub-btn"    id="tnav-board"  onclick="taskSw('board')">📊  任务看板</button>
+      <button class="sub-btn"    id="tnav-create" onclick="taskSw('create')">➕  下发任务</button>
+    </div>
+
+    <!-- 我的任务 -->
+    <div id="task-pane-my">
+      <div class="section" style="margin-bottom:12px">
+        <div class="sec-head"><div class="sec-num">1</div><span class="sec-title">选择你的名字</span></div>
+        <div class="sec-body">
+          <div class="name-grid" id="task-name-grid">
+            <button class="name-chip" onclick="setTaskName('杰哥')">杰哥</button>
+            <button class="name-chip" onclick="setTaskName('凯弟')">凯弟</button>
+            <button class="name-chip" onclick="setTaskName('玉汝')">玉汝</button>
+            <button class="name-chip" onclick="setTaskName('康妹')">康妹</button>
+            <button class="name-chip" onclick="setTaskName('大林')">大林</button>
+          </div>
+        </div>
+      </div>
+      <div id="my-task-list"></div>
+    </div>
+
+    <!-- 任务看板 -->
+    <div id="task-pane-board" style="display:none">
+      <div class="filter-bar" id="board-filter"></div>
+      <div id="board-list"></div>
+    </div>
+
+    <!-- 下发任务 -->
+    <div id="task-pane-create" style="display:none">
+      <div class="section">
+        <div class="sec-head"><div class="sec-num">✦</div><span class="sec-title">下发新任务</span></div>
+        <div class="sec-body">
+          <div class="fgroup"><label class="flabel">任务标题 *</label><input type="text" id="t-title" placeholder="简洁说明这个任务要做什么"></div>
+          <div class="fgroup"><label class="flabel">任务描述 / 背景说明</label><textarea id="t-desc" rows="3" placeholder="补充背景、要求、参考资料等..."></textarea></div>
+          <div class="frow">
+            <div><label class="flabel">截止日期 *</label><input type="date" id="t-deadline"></div>
+            <div><label class="flabel">优先级</label><select id="t-pri"><option value="high">🔴 高优先级</option><option value="mid" selected>🟡 中优先级</option><option value="low">⚪ 低优先级</option></select></div>
+          </div>
+          <div class="fgroup">
+            <label class="flabel">指派给 *（可多选）</label>
+            <div class="name-grid" id="assign-grid">
+              <button class="name-chip" data-v="杰哥" onclick="toggleAssign(this)">杰哥</button>
+              <button class="name-chip" data-v="凯弟" onclick="toggleAssign(this)">凯弟</button>
+              <button class="name-chip" data-v="玉汝" onclick="toggleAssign(this)">玉汝</button>
+              <button class="name-chip" data-v="康妹" onclick="toggleAssign(this)">康妹</button>
+              <button class="name-chip" data-v="大林" onclick="toggleAssign(this)">大林</button>
+              <button class="name-chip" data-v="__all__" onclick="assignAll()">全部人</button>
+            </div>
+          </div>
+          <div class="fgroup">
+            <label class="flabel">需要反馈的内容</label>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:6px">
+              <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="fb-text" checked> 文字进展说明</label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="fb-data"> 填写数据 / 结果</label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="fb-file"> 上传附件 / 截图</label>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" onclick="createTask()">下发任务</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PANE 3：领导反馈
+  ══════════════════════════════════════════ -->
+  <div id="pane-leader" style="display:none">
+    <div class="sub-nav">
+      <button class="sub-btn on" id="lnav-add"     onclick="leaderSw('add')">📝  录入反馈</button>
+      <button class="sub-btn"    id="lnav-history" onclick="leaderSw('history')">📖  历史回顾</button>
+    </div>
+
+    <!-- 录入反馈 -->
+    <div id="lpane-add">
+      <div class="section">
+        <div class="sec-head">
+          <div class="sec-num" style="background:var(--purple)">💬</div>
+          <span class="sec-title">录入本月领导反馈</span>
+          <span class="badge-req">每月汇报后填写</span>
+        </div>
+        <div class="sec-body">
+          <div class="frow">
+            <div>
+              <label class="flabel">汇报月份 *</label>
+              <select id="lf-month" onchange="loadExistingFeedback()"></select>
+            </div>
+            <div>
+              <label class="flabel">整体评价</label>
+              <div class="lf-rating" id="lf-rating">
+                <button class="rating-btn" data-v="good" onclick="setRating('good')">👍 表示认可</button>
+                <button class="rating-btn" data-v="mid"  onclick="setRating('mid')">💬 需要改进</button>
+                <button class="rating-btn" data-v="bad"  onclick="setRating('bad')">⚠️ 重点关注</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="fgroup">
+            <label class="flabel">领导的核心结论 / 定性评价 *</label>
+            <textarea id="lf-conclusion" rows="4" placeholder="领导对本月整体工作的定性评价，关键观点和结论...&#10;&#10;例如：领导认为 Q1 整体进展符合预期，合同模块数据表现亮眼，AI 小助手准确率仍需提升，Q2 要重点推进成员公司规模化接入。"></textarea>
+          </div>
+
+          <div class="fgroup">
+            <label class="flabel">表扬 / 认可的亮点</label>
+            <textarea id="lf-praise" rows="3" placeholder="领导重点表扬或认可的工作，具体说明...&#10;&#10;例如：合同续签功能月活增长 336%，超出预期；运营团队推进效率高，3 家成员公司接入速度快。"></textarea>
+          </div>
+
+          <div class="fgroup">
+            <label class="flabel">需要改进 / 重点关注的问题</label>
+            <textarea id="lf-improve" rows="3" placeholder="领导指出的问题、风险点或改进方向...&#10;&#10;例如：AI 小助手回答准确率距 90% 目标仍有差距；HR 工作台移动端适配推进偏慢，需加快节奏。"></textarea>
+          </div>
+
+          <div class="fgroup">
+            <label class="flabel">领导的明确指令 / 下步要求</label>
+            <textarea id="lf-action" rows="3" placeholder="领导明确要求下月必须完成或跟进的事项...&#10;&#10;例如：下月必须完成干部任免移动端适配，给 Q2 大规模推广打好基础；座谈会方案本月底前提交审批。"></textarea>
+          </div>
+
+          <div class="fgroup">
+            <label class="flabel">其他备注（现场氛围、特殊信息等）</label>
+            <textarea id="lf-note" rows="2" placeholder="会议氛围、领导情绪、额外的非正式信息等..."></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-block" onclick="saveFeedback()">保存领导反馈</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 历史回顾 -->
+    <div id="lpane-history" style="display:none">
+      <div id="lf-history-list"></div>
+    </div>
   </div>
 </div>
 
-<div class="loading" id="loading">数据同步中...</div>
+<!-- ── Feedback modal ── -->
+<div class="modal-bg" id="fb-modal">
+  <div class="modal">
+    <div class="modal-head"><span class="modal-title" id="fb-modal-title">提交任务反馈</span><button class="modal-close" onclick="closeFbModal()">×</button></div>
+    <div class="modal-body">
+      <div id="fb-task-info" style="background:var(--panel);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--mid);line-height:1.7"></div>
+      <div class="fgroup"><label class="flabel">进展说明 *</label><textarea id="fb-progress" rows="4" placeholder="描述你的完成情况、遇到的问题、处理结果..."></textarea></div>
+      <div id="fb-data-area" class="fgroup" style="display:none"><label class="flabel">数据 / 结果</label><input type="text" id="fb-data-val" placeholder="如：完成率 80%、数据条数 1,240"></div>
+      <div id="fb-file-area" class="fgroup" style="display:none">
+        <label class="flabel">上传附件 / 截图</label>
+        <input type="file" id="fb-file-input" accept="image/*,.pdf,.xlsx,.docx" multiple style="font-size:13px;width:100%">
+        <div class="file-preview" id="file-preview"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fb-done" style="width:auto"><label for="fb-done" style="font-size:13px;cursor:pointer">标记为已完成</label></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeFbModal()">取消</button><button class="btn btn-primary" onclick="submitFeedback()">提交反馈</button></div>
+  </div>
+</div>
+
+<div class="loading" id="loading">同步中...</div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ── State ──────────────────────────────────────────────────────
 const JSONBIN = `https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}`;
 const IS_CFG  = CONFIG.BIN_ID !== 'YOUR_BIN_ID_HERE';
-let   ALL     = [];
-let   SEL_NAME = '';
-let   SEL_PROJS = [];
-let   FILTER  = 'all';
-let   CUR_TAB = 'submit';
+const NAMES   = ['杰哥','凯弟','玉汝','康妹','大林'];
 
-// ── Utils ──────────────────────────────────────────────────────
-const mKey   = () => new Date().toISOString().slice(0,7);
-const mLabel = k  => { const [y,m]=k.split('-'); return `${y}年${parseInt(m)}月`; };
-const genId  = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-const esc    = s  => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const toast  = (msg,ms=2800) => {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.style.display='block';
-  clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',ms);
-};
-const load   = v => document.getElementById('loading').className='loading'+(v?' show':'');
+let DB = { entries:[], tasks:[], leaderFeedbacks:[] };
+let SEL_NAME='', SEL_PROJS=[], FILTER='all', BOARD_FILTER='all';
+let TASK_NAME='', SEL_ASSIGN=[], CUR_TASK_ID=null, FB_FILES=[];
+let LF_RATING='';
 
-// ── Init ──────────────────────────────────────────────────────
-(async function init(){
-  document.getElementById('topbar-badge').textContent = mLabel(mKey());
-  if(!IS_CFG){ document.getElementById('cfg-warn').style.display='block'; }
-  await fetchData();
-  // restore last name
-  const ln=localStorage.getItem('hr_last_name');
-  if(ln) selName(ln);
-  const ld=localStorage.getItem('hr_last_dept');
-  if(ld){
-    document.querySelectorAll('.proj-card').forEach(c=>{
-      if(c.dataset.v===ld){ toggleProj(c,true); }
-    });
+const mKey  =()=>new Date().toISOString().slice(0,7);
+const mLabel=k=>{const[y,m]=k.split('-');return`${y}年${parseInt(m)}月`};
+const genId =()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc   =s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const $     =id=>document.getElementById(id);
+const toast =(msg,ms=2800)=>{const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',ms)};
+const load  =v=>$('loading').className='loading'+(v?' show':'');
+
+function daysLeft(dl){if(!dl)return null;return Math.ceil((new Date(dl)-new Date())/(1000*60*60*24));}
+function dlClass(dl,done){if(done)return 'dl-done';const d=daysLeft(dl);if(d===null)return 'dl-ok';if(d<0)return 'dl-over';if(d<=3)return 'dl-soon';return 'dl-ok';}
+function dlLabel(dl,done){if(done)return '已完成';const d=daysLeft(dl);if(d===null)return '无截止日';if(d<0)return`逾期 ${Math.abs(d)} 天`;if(d===0)return'今天截止';if(d===1)return'明天截止';return`${d} 天后截止`;}
+
+// ── Month options helper ──────────────────────────────────────
+function buildMonthOptions(selectId, selectedKey){
+  const sel=$(selectId); sel.innerHTML='';
+  const months=[];const d=new Date();
+  for(let i=0;i<12;i++){
+    const dt=new Date(d.getFullYear(),d.getMonth()-i,1);
+    months.push(dt.toISOString().slice(0,7));
   }
-})();
+  months.forEach(m=>{
+    const opt=document.createElement('option');
+    opt.value=m;opt.textContent=mLabel(m);
+    if(m===(selectedKey||mKey()))opt.selected=true;
+    sel.appendChild(opt);
+  });
+}
 
-// ── Data ──────────────────────────────────────────────────────
-async function fetchData(){
-  if(!IS_CFG){ ALL=JSON.parse(localStorage.getItem('hr_local')||'[]'); return; }
+// ── Data layer ────────────────────────────────────────────────
+async function fetchDB(){
+  if(!IS_CFG){DB=JSON.parse(localStorage.getItem('hr_db')||'{"entries":[],"tasks":[],"leaderFeedbacks":[]}');return;}
   load(true);
   try{
     const r=await fetch(JSONBIN+'/latest',{headers:{'X-Master-Key':CONFIG.API_KEY}});
-    const d=await r.json();
-    ALL=d.record?.entries||[];
-  }catch(e){ ALL=[]; }
+    const d=await r.json(); DB=d.record||{entries:[],tasks:[],leaderFeedbacks:[]};
+    if(!DB.entries)DB.entries=[];if(!DB.tasks)DB.tasks=[];if(!DB.leaderFeedbacks)DB.leaderFeedbacks=[];
+  }catch(e){DB={entries:[],tasks:[],leaderFeedbacks:[]};}
   load(false);
 }
-
-async function pushData(){
-  if(!IS_CFG){ localStorage.setItem('hr_local',JSON.stringify(ALL)); return; }
-  try{
-    await fetch(JSONBIN,{
-      method:'PUT',
-      headers:{'Content-Type':'application/json','X-Master-Key':CONFIG.API_KEY},
-      body:JSON.stringify({entries:ALL})
-    });
-  }catch(e){ toast('同步失败，请检查网络'); }
+async function pushDB(){
+  if(!IS_CFG){localStorage.setItem('hr_db',JSON.stringify(DB));return;}
+  try{await fetch(JSONBIN,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':CONFIG.API_KEY},body:JSON.stringify(DB)});}
+  catch(e){toast('同步失败，请检查网络');}
 }
 
-// ── Tab switch ────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────
+(async function init(){
+  $('topbar-badge').textContent=mLabel(mKey());
+  if(!IS_CFG)$('cfg-warn').style.display='block';
+  buildMonthOptions('lf-month');
+  await fetchDB();
+  const ln=localStorage.getItem('hr_last_name');
+  if(ln){selName(ln);setTaskName(ln);}
+  const d=new Date();d.setDate(d.getDate()+(5-d.getDay()+7)%7||7);
+  $('t-deadline').value=d.toISOString().slice(0,10);
+})();
+
+// ── Top tab switch ────────────────────────────────────────────
 function sw(t){
-  CUR_TAB=t;
-  document.getElementById('pane-submit').style.display=t==='submit'?'':'none';
-  document.getElementById('pane-view').style.display=t==='view'?'':'none';
-  document.querySelectorAll('.nav-tab').forEach((b,i)=>{
-    b.className='nav-tab'+(['submit','view'][i]===t?' on':'');
-  });
-  if(t==='view'){ fetchData().then(renderView); }
+  ['task','report','leader'].forEach(p=>$(('pane-'+p)).style.display=p===t?'':'none');
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.className='nav-tab'+(['task','report','leader'][i]===t?' on':''));
+  if(t==='report'){fetchDB();}
+  if(t==='task'){fetchDB().then(()=>{renderMyTasks();renderBoard();});}
+  if(t==='leader'){fetchDB().then(()=>{loadExistingFeedback();renderLeaderHistory();});}
 }
 
-// ── Form helpers ──────────────────────────────────────────────
-function selName(n){
-  SEL_NAME=n;
-  document.querySelectorAll('.name-chip').forEach(c=>{
-    c.className='name-chip'+(c.textContent===n?' sel':'');
-  });
-  chk();
+// ── Monthly report sub-tabs ───────────────────────────────────
+function reportSw(t){
+  $('rpane-submit').style.display=t==='submit'?'':'none';
+  $('rpane-view').style.display=t==='view'?'':'none';
+  $('sub-submit').className='sub-btn'+(t==='submit'?' on':'');
+  $('sub-view').className='sub-btn'+(t==='view'?' on':'');
+  if(t==='view'){fetchDB().then(renderView);}
 }
 
-function toggleProj(el, silent){
-  const v=el.dataset.v;
-  const idx=SEL_PROJS.indexOf(v);
-  if(idx>=0){ SEL_PROJS.splice(idx,1); el.className='proj-card'; }
-  else { SEL_PROJS.push(v); el.className='proj-card sel'; }
-  if(!silent) chk();
-}
+// ── Submit form ───────────────────────────────────────────────
+function selName(n){SEL_NAME=n;document.querySelectorAll('#form-area .name-chip').forEach(c=>c.className='name-chip'+(c.textContent===n?' sel':''));chk();}
+function toggleProj(el){const v=el.dataset.v;const i=SEL_PROJS.indexOf(v);if(i>=0){SEL_PROJS.splice(i,1);el.className='proj-card';}else{SEL_PROJS.push(v);el.className='proj-card sel';}chk();}
+function addRow(){const tb=$('dt-body');const row=document.createElement('div');row.className='dt-row';row.innerHTML=`<input type="text" placeholder="模块"><input type="text" placeholder="指标"><input type="text" placeholder="数值"><input type="text" placeholder="备注"><button class="del-btn" onclick="delRow(this)">×</button>`;tb.appendChild(row);row.querySelector('input').focus();row.addEventListener('input',chk);}
+function delRow(btn){if(document.querySelectorAll('#dt-body .dt-row').length<=1)return;btn.closest('.dt-row').remove();chk();}
+function hasData(){for(let r of document.querySelectorAll('#dt-body .dt-row')){const ins=[...r.querySelectorAll('input')];if(ins[0].value.trim()&&ins[2].value.trim())return true;}return false;}
+function chk(){const ok=[!!SEL_NAME,SEL_PROJS.length>0,!!$('f-progress').value.trim(),hasData(),!!$('f-plan').value.trim()];const done=ok.filter(Boolean).length;ok.forEach((v,i)=>$('ps'+(i+1)).className='prog-step'+(v?' done':''));$('prog-label').textContent=`${done} / 5 必填项完成`;$('submit-btn').disabled=done<5;}
+$('dt-body').addEventListener('input',chk);
 
-function addRow(){
-  const tb=document.getElementById('dt-body');
-  const row=document.createElement('div');
-  row.className='dt-row';
-  row.innerHTML=`
-    <input type="text" placeholder="模块 / 功能名称">
-    <input type="text" placeholder="关键指标名称">
-    <input type="text" placeholder="具体数值">
-    <input type="text" placeholder="备注说明">
-    <button class="del-btn" onclick="delRow(this)">×</button>`;
-  tb.appendChild(row);
-  row.querySelector('input').focus();
-  row.addEventListener('input',chk);
-}
-
-function delRow(btn){
-  const rows=document.querySelectorAll('#dt-body .dt-row');
-  if(rows.length<=1) return;
-  btn.closest('.dt-row').remove(); chk();
-}
-
-function hasData(){
-  for(let r of document.querySelectorAll('#dt-body .dt-row')){
-    const ins=[...r.querySelectorAll('input')];
-    if(ins[0].value.trim()&&ins[2].value.trim()) return true;
-  }
-  return false;
-}
-
-function chk(){
-  const ok=[
-    !!SEL_NAME,
-    SEL_PROJS.length>0,
-    !!document.getElementById('f-progress').value.trim(),
-    hasData(),
-    !!document.getElementById('f-plan').value.trim(),
-  ];
-  const done=ok.filter(Boolean).length;
-  ok.forEach((v,i)=>document.getElementById('ps'+(i+1)).className='prog-step'+(v?' done':''));
-  document.getElementById('prog-label').textContent=`${done} / 5 必填项完成`;
-  document.getElementById('submit-btn').disabled=done<5;
-}
-
-document.getElementById('dt-body').addEventListener('input',chk);
-
-// ── Submit ────────────────────────────────────────────────────
 async function doSubmit(){
-  const dataRows=[];
-  document.querySelectorAll('#dt-body .dt-row').forEach(r=>{
-    const ins=[...r.querySelectorAll('input')].map(i=>i.value.trim());
-    if(ins[0]&&ins[2]) dataRows.push({module:ins[0],metric:ins[1],value:ins[2],note:ins[3]});
-  });
-
-  const entry={
-    id:genId(), name:SEL_NAME, projects:[...SEL_PROJS],
-    progress:document.getElementById('f-progress').value.trim(),
-    dataRows, plan:document.getElementById('f-plan').value.trim(),
-    issue:document.getElementById('f-issue').value.trim(),
-    month:mKey(), date:new Date().toLocaleDateString('zh-CN'),
-    time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})
-  };
-
-  // Remove existing entry by same person this month, then prepend
-  ALL=ALL.filter(e=>!(e.name===SEL_NAME&&e.month===mKey()));
-  ALL.unshift(entry);
-
-  load(true);
-  await pushData();
-  load(false);
-
-  localStorage.setItem('hr_last_name', SEL_NAME);
-
-  // Show success
-  const meta=document.getElementById('s-meta');
-  const rows=[
-    ['提交人', SEL_NAME],
-    ['负责项目', entry.projects.join('、')],
-    ['本月进展', entry.progress.slice(0,100)+(entry.progress.length>100?'…':'')],
-    ['数据记录', dataRows.length+'条'],
-    ['下步规划', entry.plan.slice(0,80)+(entry.plan.length>80?'…':'')],
-  ];
-  if(entry.issue) rows.push(['问题困难', entry.issue.slice(0,80)+(entry.issue.length>80?'…':'')]);
-  meta.innerHTML=rows.map(([l,v])=>`
-    <div class="s-row"><span class="s-label">${l}</span><span class="s-val">${esc(v)}</span></div>`).join('');
-
-  document.getElementById('form-area').style.display='none';
-  document.getElementById('success-card').className='success-card show';
-  window.scrollTo(0,0);
+  const dRows=[];document.querySelectorAll('#dt-body .dt-row').forEach(r=>{const ins=[...r.querySelectorAll('input')].map(i=>i.value.trim());if(ins[0]&&ins[2])dRows.push({module:ins[0],metric:ins[1],value:ins[2],note:ins[3]});});
+  const entry={id:genId(),name:SEL_NAME,projects:[...SEL_PROJS],progress:$('f-progress').value.trim(),dataRows:dRows,plan:$('f-plan').value.trim(),issue:$('f-issue').value.trim(),month:mKey(),date:new Date().toLocaleDateString('zh-CN'),time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})};
+  DB.entries=DB.entries.filter(e=>!(e.name===SEL_NAME&&e.month===mKey()));DB.entries.unshift(entry);
+  load(true);await pushDB();load(false);
+  localStorage.setItem('hr_last_name',SEL_NAME);
+  const rows=[['提交人',SEL_NAME],['负责项目',entry.projects.join('、')],['本月进展',entry.progress.slice(0,100)+'…'],['数据记录',dRows.length+'条'],['下步规划',entry.plan.slice(0,80)+'…']];
+  if(entry.issue)rows.push(['问题困难',entry.issue.slice(0,80)+'…']);
+  $('s-meta').innerHTML=rows.map(([l,v])=>`<div class="s-row"><span class="s-label">${l}</span><span class="s-val">${esc(v)}</span></div>`).join('');
+  $('form-area').style.display='none';$('success-card').className='success-card show';window.scrollTo(0,0);
 }
+function backToEdit(){$('success-card').className='success-card';$('form-area').style.display='block';window.scrollTo(0,0);}
 
-function backToEdit(){
-  document.getElementById('success-card').className='success-card';
-  document.getElementById('form-area').style.display='block';
-  window.scrollTo(0,0);
-}
-
-// ── View pane ─────────────────────────────────────────────────
+// ── View summary ──────────────────────────────────────────────
 function renderView(){
-  const cur=mKey();
-  const month=ALL.filter(e=>e.month===cur);
+  const cur=mKey(),month=DB.entries.filter(e=>e.month===cur);
   const authors=new Set(month.map(e=>e.name)).size;
-  const withIssue=month.filter(e=>e.issue).length;
-  const submitted=month.length;
-
-  document.getElementById('v-stats').innerHTML=`
-    <div class="stat"><div class="stat-n">${submitted}</div><div class="stat-l">已提交人数</div></div>
-    <div class="stat"><div class="stat-n">${5-authors>0?5-authors:0}</div><div class="stat-l">未提交人数</div></div>
-    <div class="stat"><div class="stat-n">${month.reduce((s,e)=>s+e.dataRows.length,0)}</div><div class="stat-l">数据记录条数</div></div>
-    <div class="stat"><div class="stat-n">${withIssue}</div><div class="stat-l">存在问题困难</div></div>`;
-
-  // Filter bar
+  $('v-stats').innerHTML=`<div class="stat"><div class="stat-n">${month.length}</div><div class="stat-l">已提交人数</div></div><div class="stat"><div class="stat-n">${NAMES.length-authors>0?NAMES.length-authors:0}</div><div class="stat-l">未提交人数</div></div><div class="stat"><div class="stat-n">${month.reduce((s,e)=>s+e.dataRows.length,0)}</div><div class="stat-l">数据记录条数</div></div><div class="stat"><div class="stat-n">${month.filter(e=>e.issue).length}</div><div class="stat-l">存在问题困难</div></div>`;
   const names=['all',...new Set(month.map(e=>e.name))];
-  document.getElementById('v-filter').innerHTML=
-    '<span class="filter-label">筛选成员：</span>'+
-    names.map(n=>`<button class="fchip${n===FILTER?' on':''}" onclick="setFilter('${n}')">${n==='all'?'全部':n}</button>`).join('');
-
+  $('v-filter').innerHTML='<span class="filter-label">筛选：</span>'+names.map(n=>`<button class="fchip${n===FILTER?' on':''}" onclick="setFilter('${n}')">${n==='all'?'全部':n}</button>`).join('');
   renderEntries(month);
 }
-
-function setFilter(f){
-  FILTER=f;
-  const cur=mKey();
-  const month=ALL.filter(e=>e.month===cur);
-  document.querySelectorAll('.fchip').forEach(c=>{
-    c.className='fchip'+(c.textContent===(f==='all'?'全部':f)?' on':'');
-  });
-  renderEntries(month);
-}
-
+function setFilter(f){FILTER=f;const cur=mKey();renderEntries(DB.entries.filter(e=>e.month===cur));document.querySelectorAll('#v-filter .fchip').forEach(c=>c.className='fchip'+(c.textContent===(f==='all'?'全部':f)?' on':''));}
 function renderEntries(month){
   const list=FILTER==='all'?month:month.filter(e=>e.name===FILTER);
-  const el=document.getElementById('v-list');
-  if(!list.length){
-    el.innerHTML='<div class="empty">本月暂无提交记录<br>提醒团队成员填写后刷新查看</div>';
-    return;
+  const el=$('v-list');
+  if(!list.length){el.innerHTML='<div class="empty">本月暂无提交<br>提醒团队成员填写后刷新</div>';return;}
+  el.innerHTML=list.map(e=>`<div class="entry"><div class="e-meta"><div class="avatar">${e.name.slice(0,1)}</div><span class="e-name">${esc(e.name)}</span><span class="e-proj">${e.projects.join(' · ')}</span><span class="e-date">${e.date} ${e.time||''}</span></div><div class="e-section"><div class="e-sec-title">本月进展</div><div class="e-sec-body">${esc(e.progress)}</div></div>${e.dataRows&&e.dataRows.length?`<div class="e-section"><div class="e-sec-title">数据表现</div><table class="e-data-table"><tr><th>模块</th><th>指标</th><th>数值</th><th>备注</th></tr>${e.dataRows.map(d=>`<tr><td>${esc(d.module)}</td><td>${esc(d.metric)}</td><td>${esc(d.value)}</td><td>${esc(d.note)}</td></tr>`).join('')}</table></div>`:''}<div class="e-section"><div class="e-sec-title">下一步规划</div><div class="e-sec-body">${esc(e.plan)}</div></div>${e.issue?`<div class="e-section"><div class="e-sec-title" style="color:var(--red)">问题与困难</div><div class="e-sec-body">${esc(e.issue)}</div></div>`:''}</div>`).join('');
+}
+
+// ── Task module ───────────────────────────────────────────────
+function taskSw(t){['my','board','create'].forEach(p=>{$('task-pane-'+p).style.display=p===t?'':'none';$('tnav-'+p).className='sub-btn'+(p===t?' on':'');});if(t==='board')renderBoard();if(t==='my')renderMyTasks();}
+function setTaskName(n){TASK_NAME=n;document.querySelectorAll('#task-name-grid .name-chip').forEach(c=>c.className='name-chip'+(c.textContent===n?' sel':''));localStorage.setItem('hr_last_name',n);renderMyTasks();}
+function toggleAssign(el){const v=el.dataset.v;const i=SEL_ASSIGN.indexOf(v);if(i>=0){SEL_ASSIGN.splice(i,1);el.className='name-chip';}else{SEL_ASSIGN.push(v);el.className='name-chip sel';}}
+function assignAll(){SEL_ASSIGN=[...NAMES];document.querySelectorAll('#assign-grid .name-chip').forEach(c=>c.className='name-chip sel');}
+
+async function createTask(){
+  const title=$('t-title').value.trim();const deadline=$('t-deadline').value;
+  if(!title){$('t-title').style.borderColor='var(--orange)';$('t-title').focus();return;}
+  if(!SEL_ASSIGN.length){toast('请选择指派人员');return;}
+  $('t-title').style.borderColor='';
+  const task={id:genId(),title,desc:$('t-desc').value.trim(),deadline,pri:$('t-pri').value,assignees:[...SEL_ASSIGN],fbTypes:{text:$('fb-text').checked,data:$('fb-data').checked,file:$('fb-file').checked},feedbacks:[],status:'active',createdAt:new Date().toLocaleDateString('zh-CN')};
+  DB.tasks.unshift(task);load(true);await pushDB();load(false);
+  toast('✓ 任务已下发给 '+SEL_ASSIGN.join('、'));
+  $('t-title').value='';$('t-desc').value='';SEL_ASSIGN=[];document.querySelectorAll('#assign-grid .name-chip').forEach(c=>c.className='name-chip');
+  taskSw('board');renderBoard();
+}
+
+function renderMyTasks(){
+  const el=$('my-task-list');
+  if(!TASK_NAME){el.innerHTML='<div class="empty">请先选择你的名字</div>';return;}
+  const myTasks=DB.tasks.filter(t=>t.assignees.includes(TASK_NAME));
+  if(!myTasks.length){el.innerHTML='<div class="empty">暂无分配给你的任务</div>';return;}
+  const priL={high:'高优',mid:'中优',low:'低优'};const priC={high:'pri-high',mid:'pri-mid',low:'pri-low'};
+  const render=t=>{
+    const myFb=t.feedbacks.find(f=>f.name===TASK_NAME);const isDone=t.status==='done'||myFb?.done;const dl=daysLeft(t.deadline);
+    const cc=isDone?'done-card':dl!==null&&dl<0?'overdue':dl!==null&&dl<=3?'due-soon':'';
+    return `<div class="task-card ${cc}"><div class="task-top"><div class="task-title${isDone?' done-text':''}">${esc(t.title)}</div><span class="pri-badge ${priC[t.pri]}">${priL[t.pri]}</span></div>${t.desc?`<div class="task-desc">${esc(t.desc)}</div>`:''}<div class="task-meta"><span class="deadline-tag ${dlClass(t.deadline,isDone)}">${dlLabel(t.deadline,isDone)}</span><span>截止：${t.deadline||'无'}</span><span>下发：${t.createdAt}</span></div>${myFb?`<div class="feedback-area"><div class="feedback-title">我的反馈</div><div class="fb-text">${esc(myFb.text)}</div>${myFb.dataVal?`<div class="fb-data">数据：${esc(myFb.dataVal)}</div>`:''}${myFb.fileName?`<div class="fb-file">附件：${esc(myFb.fileName)}</div>`:''}${myFb.done?'<div style="font-size:12px;color:var(--green);margin-top:4px">✓ 已标记完成</div>':''}</div>`:''}<div class="task-actions">${!isDone?`<button class="btn btn-primary btn-sm" onclick="openFbModal('${t.id}')">${myFb?'修改反馈':'提交反馈'}</button>`:'<span style="font-size:12px;color:var(--green);font-weight:500">✓ 已完成</span>'}</div></div>`;
+  };
+  const active=myTasks.filter(t=>t.status!=='done'&&!t.feedbacks.find(f=>f.name===TASK_NAME)?.done);
+  const done=myTasks.filter(t=>t.status==='done'||t.feedbacks.find(f=>f.name===TASK_NAME)?.done);
+  el.innerHTML=active.map(render).join('')+(done.length?`<div style="font-size:12px;color:var(--light);margin:16px 0 8px;font-weight:500">已完成 ${done.length} 个</div>`+done.map(render).join(''):'');
+}
+
+function renderBoard(){
+  const el=$('board-list');const tasks=DB.tasks;
+  const filters=['all','active','done','overdue'];const fl={all:'全部',active:'进行中',done:'已完成',overdue:'已逾期'};
+  const cnt={all:tasks.length,active:tasks.filter(t=>t.status!=='done').length,done:tasks.filter(t=>t.status==='done').length,overdue:tasks.filter(t=>t.status!=='done'&&daysLeft(t.deadline)!==null&&daysLeft(t.deadline)<0).length};
+  $('board-filter').innerHTML='<span class="filter-label">状态：</span>'+filters.map(f=>`<button class="fchip${f===BOARD_FILTER?' on':''}" onclick="setBoardFilter('${f}')">${fl[f]} ${cnt[f]}</button>`).join('');
+  let list=tasks;if(BOARD_FILTER==='active')list=tasks.filter(t=>t.status!=='done');if(BOARD_FILTER==='done')list=tasks.filter(t=>t.status==='done');if(BOARD_FILTER==='overdue')list=tasks.filter(t=>t.status!=='done'&&daysLeft(t.deadline)!==null&&daysLeft(t.deadline)<0);
+  if(!list.length){el.innerHTML='<div class="empty">暂无任务</div>';return;}
+  const priL={high:'高优',mid:'中优',low:'低优'};const priC={high:'pri-high',mid:'pri-mid',low:'pri-low'};
+  el.innerHTML=list.map(t=>{
+    const isDone=t.status==='done';const dl=daysLeft(t.deadline);const cc=isDone?'done-card':dl!==null&&dl<0?'overdue':dl!==null&&dl<=3?'due-soon':'';
+    const doneCount=t.feedbacks.filter(f=>f.done).length;
+    return `<div class="task-card ${cc}"><div class="task-top"><div class="task-title${isDone?' done-text':''}">${esc(t.title)}</div><span class="pri-badge ${priC[t.pri]}">${priL[t.pri]}</span></div>${t.desc?`<div class="task-desc">${esc(t.desc)}</div>`:''}<div class="task-meta"><span class="deadline-tag ${dlClass(t.deadline,isDone)}">${dlLabel(t.deadline,isDone)}</span><span>截止：${t.deadline||'无'}</span><span>下发：${t.createdAt}</span></div><div style="margin-bottom:10px;font-size:13px;color:var(--mid)">指派：${t.assignees.map(n=>`<span class="assignee-tag">${n}</span>`).join(' ')} &nbsp; 完成：<strong style="color:${doneCount===t.assignees.length?'var(--green)':'var(--amber)'}">${doneCount}/${t.assignees.length}</strong></div>${t.feedbacks.length?`<div class="feedback-area"><div class="feedback-title">收到的反馈（${t.feedbacks.length}条）</div>${t.feedbacks.map(f=>`<div class="feedback-item"><span class="fb-name">${esc(f.name)}</span><span class="status-dot ${f.done?'dot-done':'dot-prog'}"></span>${esc(f.text)}${f.dataVal?`<div class="fb-data">数据：${esc(f.dataVal)}</div>`:''}${f.done?'<div style="font-size:11px;color:var(--green)">✓ 已完成</div>':''}</div>`).join('')}</div>`:''}<div class="task-actions">${!isDone?`<button class="btn btn-sm btn-primary" onclick="markDone('${t.id}')">标记完成</button>`:''}<button class="btn btn-sm btn-danger" onclick="delTask('${t.id}')">删除</button></div></div>`;
+  }).join('');
+}
+function setBoardFilter(f){BOARD_FILTER=f;renderBoard();}
+async function markDone(id){const t=DB.tasks.find(t=>t.id===id);if(!t)return;t.status='done';load(true);await pushDB();load(false);toast('✓ 已标记完成');renderBoard();}
+async function delTask(id){if(!confirm('确认删除？'))return;DB.tasks=DB.tasks.filter(t=>t.id!==id);load(true);await pushDB();load(false);toast('已删除');renderBoard();}
+
+function openFbModal(taskId){
+  const t=DB.tasks.find(t=>t.id===taskId);if(!t)return;
+  if(!TASK_NAME){toast('请先选择你的名字');return;}
+  CUR_TASK_ID=taskId;FB_FILES=[];
+  $('fb-modal-title').textContent='提交反馈 · '+t.title;
+  $('fb-task-info').innerHTML=`<strong>${esc(t.title)}</strong>${t.desc?'<br>'+esc(t.desc):''}${t.deadline?'<br>截止：'+t.deadline:''}`;
+  const myFb=t.feedbacks.find(f=>f.name===TASK_NAME);
+  $('fb-progress').value=myFb?.text||'';$('fb-data-val').value=myFb?.dataVal||'';$('fb-done').checked=myFb?.done||false;$('file-preview').innerHTML='';
+  $('fb-data-area').style.display=t.fbTypes?.data?'':'none';$('fb-file-area').style.display=t.fbTypes?.file?'':'none';
+  $('fb-modal').className='modal-bg show';
+}
+function closeFbModal(){$('fb-modal').className='modal-bg';CUR_TASK_ID=null;FB_FILES=[];}
+$('fb-file-input').addEventListener('change',function(){FB_FILES=[...this.files];$('file-preview').innerHTML=FB_FILES.map((f,i)=>`<div class="file-chip">${esc(f.name)}<span class="rm" onclick="removeFile(${i})">×</span></div>`).join('');});
+function removeFile(i){FB_FILES.splice(i,1);$('file-preview').innerHTML=FB_FILES.map((f,j)=>`<div class="file-chip">${esc(f.name)}<span class="rm" onclick="removeFile(${j})">×</span></div>`).join('');}
+async function submitFeedback(){
+  const text=$('fb-progress').value.trim();if(!text){$('fb-progress').style.borderColor='var(--orange)';$('fb-progress').focus();return;}
+  $('fb-progress').style.borderColor='';
+  const t=DB.tasks.find(t=>t.id===CUR_TASK_ID);if(!t)return;
+  const fb={name:TASK_NAME,text,dataVal:$('fb-data-val').value.trim(),fileName:FB_FILES.length?FB_FILES.map(f=>f.name).join(', '):'',done:$('fb-done').checked,date:new Date().toLocaleDateString('zh-CN')};
+  t.feedbacks=t.feedbacks.filter(f=>f.name!==TASK_NAME);t.feedbacks.push(fb);
+  if(fb.done&&t.feedbacks.filter(f=>f.done).length===t.assignees.length)t.status='done';
+  load(true);await pushDB();load(false);closeFbModal();toast('✓ 反馈已提交');renderMyTasks();
+}
+
+// ── Leader feedback ───────────────────────────────────────────
+function leaderSw(t){
+  $('lpane-add').style.display=t==='add'?'':'none';
+  $('lpane-history').style.display=t==='history'?'':'none';
+  $('lnav-add').className='sub-btn'+(t==='add'?' on':'');
+  $('lnav-history').className='sub-btn'+(t==='history'?' on':'');
+  if(t==='history')renderLeaderHistory();
+}
+
+function setRating(v){
+  LF_RATING=v;
+  const clsMap={good:'sel-good',mid:'sel-mid',bad:'sel-bad'};
+  document.querySelectorAll('.rating-btn').forEach(b=>{b.className='rating-btn'+(b.dataset.v===v?' '+clsMap[v]:'');});
+}
+
+function loadExistingFeedback(){
+  const m=$('lf-month').value;
+  const existing=DB.leaderFeedbacks.find(f=>f.month===m);
+  if(existing){
+    $('lf-conclusion').value=existing.conclusion||'';
+    $('lf-praise').value=existing.praise||'';
+    $('lf-improve').value=existing.improve||'';
+    $('lf-action').value=existing.action||'';
+    $('lf-note').value=existing.note||'';
+    LF_RATING=existing.rating||'';
+    setRating(LF_RATING);
+  } else {
+    $('lf-conclusion').value='';$('lf-praise').value='';$('lf-improve').value='';$('lf-action').value='';$('lf-note').value='';
+    LF_RATING='';document.querySelectorAll('.rating-btn').forEach(b=>b.className='rating-btn');
   }
-  el.innerHTML=list.map(e=>`
-    <div class="entry">
-      <div class="e-meta">
-        <div class="avatar">${e.name.slice(0,1)}</div>
-        <span class="e-name">${esc(e.name)}</span>
-        <span class="e-proj">${e.projects.join(' · ')}</span>
-        <span class="e-date">${e.date} ${e.time||''}</span>
+}
+
+async function saveFeedback(){
+  const conclusion=$('lf-conclusion').value.trim();
+  if(!conclusion){$('lf-conclusion').style.borderColor='var(--orange)';$('lf-conclusion').focus();return;}
+  $('lf-conclusion').style.borderColor='';
+  const m=$('lf-month').value;
+  const fb={month:m,rating:LF_RATING,conclusion,praise:$('lf-praise').value.trim(),improve:$('lf-improve').value.trim(),action:$('lf-action').value.trim(),note:$('lf-note').value.trim(),savedAt:new Date().toLocaleDateString('zh-CN')};
+  DB.leaderFeedbacks=DB.leaderFeedbacks.filter(f=>f.month!==m);
+  DB.leaderFeedbacks.unshift(fb);
+  DB.leaderFeedbacks.sort((a,b)=>b.month.localeCompare(a.month));
+  load(true);await pushDB();load(false);
+  toast('✓ 领导反馈已保存');
+  renderLeaderHistory();
+}
+
+function renderLeaderHistory(){
+  const el=$('lf-history-list');
+  const list=DB.leaderFeedbacks;
+  if(!list.length){el.innerHTML='<div class="empty">暂无领导反馈记录<br>每次月度汇报后在「录入反馈」中记录</div>';return;}
+  const ratingL={good:'👍 表示认可',mid:'💬 需要改进',bad:'⚠️ 重点关注'};
+  const ratingC={good:'rb-good',mid:'rb-mid',bad:'rb-bad'};
+  el.innerHTML=list.map(f=>`
+    <div class="lf-history-card">
+      <div class="lf-hc-head">
+        <span style="font-size:15px;font-weight:500;flex:1">${mLabel(f.month)}</span>
+        ${f.rating?`<span class="rating-badge ${ratingC[f.rating]}">${ratingL[f.rating]}</span>`:''}
+        <span style="font-size:11px;color:var(--light);margin-left:8px">保存于 ${f.savedAt}</span>
       </div>
-      <div class="e-section">
-        <div class="e-sec-title">本月进展</div>
-        <div class="e-sec-body">${esc(e.progress)}</div>
+      <div class="lf-hc-body">
+        <div class="lf-hc-section">
+          <div class="lf-hc-label">核心结论</div>
+          <div class="lf-hc-text">${esc(f.conclusion)}</div>
+        </div>
+        ${f.praise?`<div class="lf-hc-section"><div class="lf-hc-label" style="color:var(--green)">表扬 / 亮点</div><div class="lf-hc-text">${esc(f.praise)}</div></div>`:''}
+        ${f.improve?`<div class="lf-hc-section"><div class="lf-hc-label" style="color:var(--amber)">需要改进</div><div class="lf-hc-text">${esc(f.improve)}</div></div>`:''}
+        ${f.action?`<div class="lf-hc-section"><div class="lf-hc-label" style="color:var(--red)">明确指令</div><div class="lf-hc-text">${esc(f.action)}</div></div>`:''}
+        ${f.note?`<div class="lf-hc-section"><div class="lf-hc-label">其他备注</div><div class="lf-hc-text">${esc(f.note)}</div></div>`:''}
+        <div style="margin-top:12px">
+          <button class="btn btn-sm btn-outline" onclick="editLeaderFeedback('${f.month}')">✏️ 修改</button>
+        </div>
       </div>
-      ${e.dataRows&&e.dataRows.length?`
-      <div class="e-section">
-        <div class="e-sec-title">数据表现</div>
-        <table class="e-data-table">
-          <tr><th>模块</th><th>指标</th><th>数值</th><th>备注</th></tr>
-          ${e.dataRows.map(d=>`<tr><td>${esc(d.module)}</td><td>${esc(d.metric)}</td><td>${esc(d.value)}</td><td>${esc(d.note)}</td></tr>`).join('')}
-        </table>
-      </div>`:''}
-      <div class="e-section">
-        <div class="e-sec-title">下一步规划</div>
-        <div class="e-sec-body">${esc(e.plan)}</div>
-      </div>
-      ${e.issue?`
-      <div class="e-section">
-        <div class="e-sec-title" style="color:#B71C1C">问题与困难</div>
-        <div class="e-sec-body">${esc(e.issue)}</div>
-      </div>`:''}
     </div>`).join('');
+}
+
+function editLeaderFeedback(m){
+  $('lf-month').value=m;
+  loadExistingFeedback();
+  leaderSw('add');
+  window.scrollTo(0,0);
 }
 </script>
 </body>
